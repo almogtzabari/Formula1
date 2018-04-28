@@ -81,11 +81,7 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
     }
     /** First Driver is needed. */
     if(driver_number == FIRST_DRIVER){
-        /** No first driver. */
-        if(team->first_driver == NULL){
-            return NULL;
-        }
-        else return team->first_driver;
+        return team->first_driver;
     }
     /** Second driver is needed. */
     else
