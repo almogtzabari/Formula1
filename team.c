@@ -84,12 +84,7 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
         return team->first_driver;
     }
     /** Second driver is needed. */
-    else
-        /** No second driver. */
-        if(team->first_driver == NULL){
-            return NULL;
-        }
-        else return team->second_driver;
+    else return team->second_driver;
 }
 
 int TeamGetPoints(Team team, TeamStatus *status){
