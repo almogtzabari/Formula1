@@ -1,0 +1,7 @@
+"C:\Program Files\JetBrains\CLion 2017.3.4\bin\cmake\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" "E:\OneDrive\OneDrive - Technion\Simester 3\234122 - Introduction to Systems Programming\Homework\HW2\Formula1"
+CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
+  CMake 3.10 or higher is required.  You are running version 3.9.6
+
+
+-- Configuring incomplete, errors occurred!
+See also "E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/cmake-build-debug/CMakeFiles/CMakeOutput.log".
