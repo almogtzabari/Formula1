@@ -87,6 +87,7 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
     else return team->second_driver;
 }
 
+
 int TeamGetPoints(Team team, TeamStatus *status){
     if(team == NULL || status == NULL){
         *status = TEAM_NULL_PTR;
