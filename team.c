@@ -100,6 +100,7 @@ int TeamGetPoints(Team team, TeamStatus *status){
     return sum;
 }
 
+//added comment
 
 /** Static Functions*/
 static int DriverNumberIsValid(DriverNumber driver_number){
