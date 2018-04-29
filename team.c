@@ -50,6 +50,13 @@ void TeamDestroy(Team team){
     free(team);
 }
 
+/**
+ ***** Function: TeamAddDriver *****
+ * Description: Adds 'driver' to 'team' if the team isn't full.
+ * @param team - Pointer to a 'team'.
+ * @param driver - Pointer to a 'driver'
+ * @return Status - success/fail.
+ */
 TeamStatus TeamAddDriver(Team team, Driver driver){
     if(team == NULL || driver == NULL)
         return TEAM_NULL_PTR;
