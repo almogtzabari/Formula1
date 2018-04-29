@@ -11,7 +11,7 @@ static int DriverNumberIsValid(DriverNumber driver_number);
 /** End of declarations */
 
 typedef struct team{
-        char* name;
+        const char* name;
         Driver first_driver;
         Driver second_driver;
 }*Team;
