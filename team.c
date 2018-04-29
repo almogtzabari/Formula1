@@ -43,6 +43,12 @@ Team TeamCreate(TeamStatus* status, char* name){
     return team;
 }
 
+/**
+ ***** Function: TeamDestroy *****
+ * Description: Freeing all allocated memory of 'team' including
+ * its drivers.
+ * @param team - Pointer to a 'team'.
+ */
 void TeamDestroy(Team team){
     DriverDestroy(team->first_driver);
     DriverDestroy(team->second_driver);
