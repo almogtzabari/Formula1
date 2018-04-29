@@ -74,6 +74,12 @@ const char * TeamGetName(Team team){
     return team->name;
 }
 
+/**
+***** Function: TeamGetDriver *****
+* @param team - Pointer to a team.
+* @param driver_number - First/second driver of the 'team'.
+* @return Pointer to the driver.
+*/
 Driver TeamGetDriver(Team team, DriverNumber driver_number){
     /** Invalid input. */
     if(team == NULL || !DriverNumberIsValid(driver_number)){
