@@ -16,7 +16,14 @@ typedef struct team{
         Driver second_driver;
 }*Team;
 
-
+/**
+ ***** TeamCreate *****
+ * @param status - Success/fail.
+ * @param name - name of the new team.
+ * @return Pointer to the new team.
+ * Note: The team is created without drivers (first and second drivers are
+ * set to be NULL).
+ */
 Team TeamCreate(TeamStatus* status, char* name){
     if(name!=NULL){
         *status = TEAM_MEMORY_ERROR;
