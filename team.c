@@ -68,13 +68,13 @@ void TeamDestroy(Team team){
  * Description: Adds 'driver' to 'team' if the team isn't full.
  * @param team - Pointer to a 'team'.
  * @param driver - Pointer to a 'driver'
- * @return Status - success/fail.
+ * @return Status - Success/fail +reason of the function.
  */
 TeamStatus TeamAddDriver(Team team, Driver driver){
     if(team == NULL || driver == NULL)
         return TEAM_NULL_PTR;
     /** There is no first driver yet. */
-    if(team->first_driver == NULL){// no first driver
+    if(team->first_driver == NULL){
         team->first_driver = driver;
         return TEAM_STATUS_OK;
     }
@@ -121,7 +121,7 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
 /**
  ***** Function: TeamGetPoints *****
  * @param team - Pointer to a team.
- * @param status - Success/fail.
+ * @param status - Will hold Success/fail +reason of the function.
  * @return Number of points the 'team' has.
  */
 int TeamGetPoints(Team team, TeamStatus *status){
