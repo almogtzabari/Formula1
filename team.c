@@ -67,6 +67,11 @@ TeamStatus TeamAddDriver(Team team, Driver driver){
     return TEAM_FULL;
 }
 
+/**
+ ***** Function: TeamGetName *****
+ * @param team - Pointer to the 'team'.
+ * @return Name (string) of the 'team'.
+ */
 const char * TeamGetName(Team team){
     if(team == NULL){
         return NULL;
