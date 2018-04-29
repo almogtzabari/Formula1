@@ -87,7 +87,12 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
     else return team->second_driver;
 }
 
-
+/**
+ ***** Function: TeamGetPoints *****
+ * @param team - Pointer to a team.
+ * @param status - Success/fail.
+ * @return Number of points the 'team' has.
+ */
 int TeamGetPoints(Team team, TeamStatus *status){
     int sum=0;
     if(team == NULL || status == NULL){
