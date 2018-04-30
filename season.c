@@ -16,15 +16,20 @@ typedef struct season {
 /**
  ****** Function: SeasonGetDriverByPosition *****
  * @param season - Pointer to a season.
- * @param position
- * @param status
- * @return
+ * @param position - A number in the rank range.
+ * @param status - Will hold success/fail of the function.
+ * @return A pointer to the desired driver.
  */
 Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status){
-    Driver* driver_array = season->driver_array;
-    for (int i = 0; i < ; ++i) {
-        if(driver_array[i])
+    /** Checks if the position is legal. */
+    if(position<1 || position>season->number_of_drivers) {
+        *status = INVALID_POSITION;
+        return NULL;
     }
+    /** Sorting drivers array of 'season' from lowest to highest rank
+     * and returns a pointer to the array. */
+    Driver* driver_array = SeasonGetDriversStandings(season);
+    return driver_array[(season->number_of_drivers)-position];
 }
 /**
  ***** Function: SeasonGetDriverStandings *****
@@ -37,8 +42,6 @@ Driver* SeasonGetDriversStandings(Season season){
 }
 
 /** Merge Sort */
-
-
 static void merge(Driver* drivers_array, int l, int m, int r)
 {
     int i, j, k;
@@ -110,3 +113,4 @@ static void mergeSort(Driver* drivers_array, int l, int r)
         merge(drivers_array, l, m, r);
     }
 }
+/** End of merge sort*/
