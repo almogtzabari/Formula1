@@ -8,7 +8,7 @@
 
 typedef struct driver {
     int id;
-    char* driver_name;
+    const char* driver_name;
     Team team;
     int points;
     Season season_of_driver;
