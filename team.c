@@ -7,6 +7,7 @@
 /** Declarations */
 
 static int DriverNumberIsValid(DriverNumber driver_number);
+void TeamPrint(Team team);
 
 /** End of declarations */
 
@@ -126,18 +127,19 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
  */
 int TeamGetPoints(Team team, TeamStatus *status){
     int sum=0;
+    DriverStatus driver_status;
     if(team == NULL || status == NULL){
         *status = TEAM_NULL_PTR;
         return 0;
     }
-    int points1 = DriverGetPoints(team->first_driver,status);
+    int points1 = DriverGetPoints(team->first_driver,&driver_status);
     /** Check if first driver's points is okay*/
-    if(*status == DRIVER_STATUS_OK){
+    if(driver_status == DRIVER_STATUS_OK){
         sum+=points1;
     }
-    int points2 = DriverGetPoints(team->second_driver,status);
+    int points2 = DriverGetPoints(team->second_driver,&driver_status);
     /** Check if second driver's points is okay*/
-    if(*status == DRIVER_STATUS_OK){
+    if(driver_status == DRIVER_STATUS_OK){
         sum+=points2;
     }
     *status = TEAM_STATUS_OK;
@@ -152,6 +154,7 @@ static int DriverNumberIsValid(DriverNumber driver_number){
     }
     return 1;
 }
+
 /** End of static functions */
 
 
