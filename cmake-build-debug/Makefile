@@ -38,10 +38,10 @@ cmake_force:
 SHELL = cmd.exe
 
 # The CMake executable.
-CMAKE_COMMAND = "C:\Program Files\JetBrains\CLion 2017.3.4\bin\cmake\bin\cmake.exe"
+CMAKE_COMMAND = "C:\Program Files\JetBrains\CLion 2018.1.2\bin\cmake\bin\cmake.exe"
 
 # The command to remove a file.
-RM = "C:\Program Files\JetBrains\CLion 2017.3.4\bin\cmake\bin\cmake.exe" -E remove -f
+RM = "C:\Program Files\JetBrains\CLion 2018.1.2\bin\cmake\bin\cmake.exe" -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -58,7 +58,7 @@ CMAKE_BINARY_DIR = "C:\Users\Almog\OneDrive - Technion\Simester 3\234122 - Intro
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	"C:\Program Files\JetBrains\CLion 2017.3.4\bin\cmake\bin\cmake.exe" -E echo "No interactive CMake dialog available."
+	"C:\Program Files\JetBrains\CLion 2018.1.2\bin\cmake\bin\cmake.exe" -E echo "No interactive CMake dialog available."
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -69,7 +69,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	"C:\Program Files\JetBrains\CLion 2017.3.4\bin\cmake\bin\cmake.exe" -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	"C:\Program Files\JetBrains\CLion 2018.1.2\bin\cmake\bin\cmake.exe" -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -176,6 +176,33 @@ main.c.s:
 	$(MAKE) -f CMakeFiles\Ex3.dir\build.make CMakeFiles/Ex3.dir/main.c.s
 .PHONY : main.c.s
 
+season.obj: season.c.obj
+
+.PHONY : season.obj
+
+# target to build an object file
+season.c.obj:
+	$(MAKE) -f CMakeFiles\Ex3.dir\build.make CMakeFiles/Ex3.dir/season.c.obj
+.PHONY : season.c.obj
+
+season.i: season.c.i
+
+.PHONY : season.i
+
+# target to preprocess a source file
+season.c.i:
+	$(MAKE) -f CMakeFiles\Ex3.dir\build.make CMakeFiles/Ex3.dir/season.c.i
+.PHONY : season.c.i
+
+season.s: season.c.s
+
+.PHONY : season.s
+
+# target to generate assembly for a file
+season.c.s:
+	$(MAKE) -f CMakeFiles\Ex3.dir\build.make CMakeFiles/Ex3.dir/season.c.s
+.PHONY : season.c.s
+
 team.obj: team.c.obj
 
 .PHONY : team.obj
@@ -218,6 +245,9 @@ help:
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
+	@echo ... season.obj
+	@echo ... season.i
+	@echo ... season.s
 	@echo ... team.obj
 	@echo ... team.i
 	@echo ... team.s

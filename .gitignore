@@ -2,4 +2,9 @@
 .idea/workspace.xml
 *.txt
 *.xml
-*.xml
+*.iml
+*.exe
+*.cmake
+*.bin
+*.log
+*.make

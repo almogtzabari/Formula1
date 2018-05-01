@@ -1,0 +1,64 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.c
+stdio.h
+-
+malloc.h
+-
+string.h
+-
+assert.h
+-
+driver.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+team.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+season.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/season.h
+
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/main.c
+stdio.h
+-
+
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/season.c
+stdio.h
+-
+malloc.h
+-
+string.h
+-
+assert.h
+-
+driver.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/season.h
+team.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+driver.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.c
+stdio.h
+-
+malloc.h
+-
+string.h
+-
+assert.h
+-
+team.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+driver.h
+C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+
