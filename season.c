@@ -42,6 +42,7 @@ Driver* SeasonGetDriversStandings(Season season){
 }
 
 /** Merge Sort */
+/* TODO: check if the sort is okay. */
 static void merge(Driver* drivers_array, int l, int m, int r)
 {
     int i, j, k;
