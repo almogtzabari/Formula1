@@ -17,22 +17,25 @@ void DriverPrint(Driver driver);
 void DriverPrintCreateStatus(DriverStatus status);
 /** End of driver declarations */
 
+/** Season declarations */
+void SeasonTesting();
+void SeasonPrint(Season season);
+/** End of season declarations */
+
 
 int main() {
-    TeamTesting();
-    printf("------------------------------------------------------------");
-    DriverTesting();
-    SeasonStatus status=SEASON_OK;
-    char string[] = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
-    Season avi=SeasonCreate(&status,string);
+//    TeamTesting();
+//    printf("------------------------------------------------------------");
+//    DriverTesting();
+//    printf("------------------------------------------------------------");
+    SeasonTesting();
     return 0;
 }
 
 
-/** Team testing functions */
+/***** Team testing functions *****/
 /* Testing: TeamCreate, TeamGetPoints, TeamAddDriver,     */
 void TeamTesting(){
-    /** Testing for Team and Driver. */
     printf("\n\nStarting TeamTesting() in:\n3...\n2...\n1...\n\n");
     TeamStatus team_status;
     DriverStatus driver_status;
@@ -62,7 +65,6 @@ void TeamTesting(){
     printf("\nPrinting Team:\n\n");
     TeamPrint(team, team_status);
     printf("\nTeamTesting() is done\n");
-    /** End of Testing for Team and Driver. */
 }
 
 /** Printing team details: name,points,drivers. */
@@ -94,10 +96,10 @@ void TeamPrintCreateStatus(TeamStatus status){
         default: ; break;
     }
 }
-/** End of team testing functions */
+/***** End of team testing functions *****/
 
 
-/** Driver testing functions */
+/***** Driver testing functions *****/
 /* Testing: DriverCreate, DriverGetName, DriverGetId, DriverGetPoints */
 void DriverTesting() {
     printf("\n\nStarting DriverTesting() in:\n3...\n2...\n1...\n\n");
@@ -141,7 +143,26 @@ void DriverPrintCreateStatus(DriverStatus status){
         default: ; break;
     }
 }
-/** End of driver testing functions */
+/***** End of driver testing functions *****/
 
+/***** Season testing functions *****/
+void SeasonTesting(){
+    SeasonStatus season_status;
+    char* string = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
+    Season season = SeasonCreate(&season_status,string);
+    SeasonPrint(season);
+}
 
-
+void SeasonPrint(Season season){
+    int number_of_teams = SeasonGetNumberOfTeams(season);
+    int number_of_drivers = SeasonGetNumberOfDrivers(season);
+    printf("Number of teams in season: %d\n",number_of_teams);
+//    Team* teams_array = SeasonGetTeamsStandings(season);
+    Driver* drivers_array = SeasonGetDriversStandings(season);
+    for(int i=0;i<number_of_drivers;i++){
+        Driver driver = drivers_array[i];
+        printf("driver name: %s\n",DriverGetName(driver));
+    }
+    printf("Number of drivers in season: %d\n",number_of_drivers);
+}
+/***** End of season testing functions *****/
