@@ -37,7 +37,7 @@ typedef struct season {
  */
 Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status){
     /** Checks if the position is legal. */
-    if(position<1 || position>season->number_of_drivers) {
+    if(position<1 || position>(season->number_of_drivers)) {
         *status = INVALID_POSITION;
         return NULL;
     }
@@ -46,6 +46,7 @@ Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* stat
     Driver* driver_array = SeasonGetDriversStandings(season);
     return driver_array[(season->number_of_drivers)-position];
 }
+
 /**
  ***** Function: SeasonGetDriverStandings *****
  * @param season - Pointer to a season.
@@ -132,6 +133,12 @@ static void mergeSort(Driver* drivers_array, int l, int r)
 }
 /** End of merge sort*/
 
+/**
+ ***** Function: SeasonCreate *****
+ * @param status - Will hold success/fail of the function.
+ * @param season_info - String containing input of teams and drivers.
+ * @return A pointer to the season.
+ */
 Season SeasonCreate (SeasonStatus* status,const char* season_info){
     int current_driver=0, current_team=0, id=1, line_number=0;
     TeamStatus team_creation_status=TEAM_STATUS_OK;
@@ -207,8 +214,13 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     return new_season;
 }
 
-
-
+/**
+ ***** Function: DriversAndTeamsCounter *****
+ * @param drivers - Will hold the number of drivers.
+ * @param teams - Will hold the number of teams.
+ * @param details - String input that contains the teams and drivers.
+ * @param status - Success/fail.
+ */
 static void driversAndTeamsCounter(int* drivers, int* teams,
                                    const char* details,SeasonStatus* status){
     int number_of_drivers=0, number_of_teams=0;
@@ -219,7 +231,7 @@ static void driversAndTeamsCounter(int* drivers, int* teams,
         return;
     }
     strcpy(season_details_copy,details);
-    char* line=strtok(season_details_copy,"\n");
+    char* line = strtok(season_details_copy,"\n");
     line=strtok(NULL,"\n");
     while(line!=NULL) {
         if (line_number % 3 == 0) {
@@ -248,7 +260,12 @@ static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
     free(team_array);
 }
 
-
+/**
+ ***** Function: SeasonDestroy *****
+ * Description: freeing all allocated memory of season including all the
+ * elements in array: drivers, teams and their pointers.
+ * @param season - A pointer to a season.
+ */
 void SeasonDestroy(Season season) {
     driverAndTeamArrayDestroy(season->drivers_array, season->team_array,
                               season->number_of_drivers,
