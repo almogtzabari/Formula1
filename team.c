@@ -58,13 +58,15 @@ Team TeamCreate(TeamStatus* status, char* name){
  * @param team - Pointer to a 'team'.
  */
 void TeamDestroy(Team team){
-    DriverDestroy(team->first_driver);
-    DriverDestroy(team->second_driver);
-    free(team->name);
-    free(team);
+    if(team!=NULL) {
+        DriverDestroy(team->first_driver);
+        DriverDestroy(team->second_driver);
+        free(team->name);
+        free(team);
+    }
 }
 
-/**
+/** Tested: Yes
  ***** Function: TeamAddDriver *****
  * Description: Adds 'driver' to 'team' if the team isn't full.
  * @param team - Pointer to a 'team'.

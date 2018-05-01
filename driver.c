@@ -43,7 +43,11 @@ void DriverSetTeam(Driver driver, Team team){
     assert(driver!=NULL && team!=NULL);
     driver->team=team;
 }
-
+/** Tested: Yes
+ ***** Function: DriverGetName *****
+ * @param driver - A pointer to a driver.
+ * @return Name of the driver.
+ */
 const char* DriverGetName(Driver driver){
     if (driver==NULL){
         return NULL;
@@ -58,6 +62,11 @@ Team DriverGetTeam(Driver driver){
     return driver->team;
 }
 
+/** Tested: Yes
+ ***** Function: DriverGetId *****
+ * @param driver - A pointer to a driver.
+ * @return ID of the driver.
+ */
 int DriverGetId(Driver driver){
     if (driver==NULL){
         return 0;
