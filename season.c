@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include <string.h>
 #include <assert.h>
+#include <stdbool.h>
 #include "driver.h"
 
 
@@ -13,6 +14,7 @@ static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
                                        int number_of_drivers, int number_of_teams);
 void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
+static bool DriverIsNone(char* name, char* source );
 
 /** End of declarations*/
 
@@ -130,8 +132,8 @@ static void mergeSort(Driver* drivers_array, int l, int r)
 
 Season SeasonCreate (SeasonStatus* status,const char* season_info){
     int current_driver=0, current_team=0, id=1, line_number=0;
-    TeamStatus team_creation_status;
-    DriverStatus driver_creation_status;
+    TeamStatus team_creation_status=TEAM_STATUS_OK;
+    DriverStatus driver_creation_status=DRIVER_STATUS_OK;
     Season new_season=malloc(sizeof(*new_season));
     if(new_season==NULL){
         *status=SEASON_MEMORY_ERROR;
@@ -143,7 +145,8 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         free(new_season);
         return NULL;
     }
-    char* season_info_copy=malloc(sizeof(strlen(season_info)+1));
+    int temp=strlen(season_info);
+    char* season_info_copy=malloc((strlen(season_info))+1);
     if(season_info_copy==NULL){
         *status=SEASON_MEMORY_ERROR;
         free(new_season);
@@ -158,7 +161,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     for (int i=0;i<new_season->number_of_teams;i++) {
         team_array[i]=NULL;
     }
-    Driver* driver_array=malloc(sizeof(*driver_array)*(new_season->number_of_drivers));
+    Driver* driver_array=malloc(sizeof(*driver_array)*new_season->number_of_drivers);
     if (driver_array==NULL){
         free(new_season);
         free(season_info_copy);
@@ -171,8 +174,8 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     strcpy(season_info_copy,season_info);
     char* season_details=strtok(season_info_copy,"\n");
     new_season->year=atoi(season_details);
+    season_details=strtok(NULL,"\n");
     while(season_details!=NULL){
-        season_details=strtok(NULL,season_info_copy);
         if(line_number%3==0){
             team_array[current_team++]=TeamCreate(&team_creation_status,season_details);
             if (team_creation_status==TEAM_MEMORY_ERROR){
@@ -183,7 +186,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
                 return NULL;
             }
         }
-        else if(!strcmp(season_details,"None")){
+        else if(!DriverIsNone(season_details,"None")){
             driver_array[current_driver++]=DriverCreate(&driver_creation_status,season_details,id++);
             if(driver_creation_status==DRIVER_MEMORY_ERROR){
                 driverAndTeamArrayDestroy(driver_array,team_array,
@@ -193,6 +196,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
                 return NULL;
             }
         }
+        season_details=strtok(NULL,"\n");
         line_number++;
     }
     free(season_info_copy);
@@ -205,36 +209,37 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
 
 static void driversAndTeamsCounter(int* drivers, int* teams,
                                    const char* details,SeasonStatus* status){
+    int number_of_drivers=0, number_of_teams=0;
     int line_number=0;
-    int numer_of_drivers=0, number_of_teams=0;
-    char* season_details_copy=malloc(sizeof(strlen(details))+1);
+    char* season_details_copy=malloc((strlen(details))+1);
     if(season_details_copy==NULL){
         *status=SEASON_MEMORY_ERROR;
         return;
     }
     strcpy(season_details_copy,details);
-    char* line=strtok(season_details_copy, "\n");
-    while(line!=NULL){
-        line=strtok(NULL,"\n");
-        if (line_number%3==0){
+    char* line=strtok(season_details_copy,"\n");
+    line=strtok(NULL,"\n");
+    while(line!=NULL) {
+        if (line_number % 3 == 0) {
             number_of_teams++;
         }
-        else if (!strcmp(line,"None")){
-            numer_of_drivers++;
+        else if (!DriverIsNone(line,"None")) {
+            number_of_drivers++;
         }
+        line = strtok(NULL,"\n");
         line_number++;
     }
-    *drivers=numer_of_drivers;
-    *teams=number_of_teams;
+    *drivers = number_of_drivers;
+    *teams = number_of_teams;
     free(season_details_copy);
 }
 
 static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
-                                       int number_of_drivers, int number_of_teams){
-    for (int i=0;i<number_of_drivers;i++) {
+                                       int number_of_drivers, int number_of_teams) {
+    for (int i = 0; i < number_of_drivers; i++) {
         DriverDestroy(driver_array[i]);
     }
-    for (int j=0;j<number_of_teams;j++) {
+    for (int j = 0; j < number_of_teams; j++) {
         TeamDestroy(team_array[j]);
     }
     free(driver_array);
@@ -242,13 +247,27 @@ static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
 }
 
 
-void SeasonDestroy(Season season){
-    driverAndTeamArrayDestroy(season->drivers_array,season->team_array,
-                              season->number_of_drivers,season->number_of_teams);
+void SeasonDestroy(Season season) {
+    driverAndTeamArrayDestroy(season->drivers_array, season->team_array,
+                              season->number_of_drivers,
+                              season->number_of_teams);
     free(season);
 }
 
 int SeasonGetNumberOfDrivers(Season season){
-    assert(season!=NULL);
-    return season->number_of_drivers;
+            assert(season!=NULL);
+            return season->number_of_drivers;
+}
+
+static bool DriverIsNone(char* name, char* source ){
+    while (*name){
+        if (*name==*source){
+            name++;
+            source++;
+        }
+        else {
+            return false;
+        }
+    }
+    return true;
 }
