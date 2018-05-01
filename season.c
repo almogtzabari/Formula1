@@ -35,7 +35,7 @@ typedef struct season {
  */
 Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status){
     /** Checks if the position is legal. */
-    if(position<1 || position>season->number_of_drivers) {
+    if(position<1 || position>(season->number_of_drivers)) {
         *status = INVALID_POSITION;
         return NULL;
     }
@@ -44,6 +44,7 @@ Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* stat
     Driver* driver_array = SeasonGetDriversStandings(season);
     return driver_array[(season->number_of_drivers)-position];
 }
+
 /**
  ***** Function: SeasonGetDriverStandings *****
  * @param season - Pointer to a season.
@@ -130,6 +131,12 @@ static void mergeSort(Driver* drivers_array, int l, int r)
 }
 /** End of merge sort*/
 
+/**
+ ***** Function: SeasonCreate *****
+ * @param status - Will hold success/fail of the function.
+ * @param season_info - String containing input of teams and drivers.
+ * @return A pointer to the season.
+ */
 Season SeasonCreate (SeasonStatus* status,const char* season_info){
     int current_driver=0, current_team=0, id=1, line_number=0;
     TeamStatus team_creation_status=TEAM_STATUS_OK;
