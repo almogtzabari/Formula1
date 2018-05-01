@@ -26,7 +26,7 @@ typedef struct team{
  * set to be NULL).
  */
 Team TeamCreate(TeamStatus* status, char* name){
-    if(name!=NULL){
+    if(name==NULL){
         *status = TEAM_MEMORY_ERROR;
         return NULL;
     }
@@ -88,7 +88,7 @@ TeamStatus TeamAddDriver(Team team, Driver driver){
     return TEAM_FULL;
 }
 
-/**
+/** Tested: Yes
  ***** Function: TeamGetName *****
  * @param team - Pointer to the 'team'.
  * @return Name (string) of the 'team'.
@@ -100,7 +100,7 @@ const char * TeamGetName(Team team){
     return team->name;
 }
 
-/**
+/** Tested: Yes
 ***** Function: TeamGetDriver *****
 * @param team - Pointer to a team.
 * @param driver_number - First/second driver of the 'team'.
