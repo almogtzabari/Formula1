@@ -9,8 +9,8 @@
 /** Declarations */
 static void mergeSort(Driver* drivers_array, int l, int r);
 static void merge(Driver* drivers_array, int l, int m, int r);
-static void driversAndTeamsCounter(int* drivers, int* teams, const char* details,SeasonStatus* status);
-static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
+static void DriversAndTeamsCounter(int* drivers, int* teams, const char* details,SeasonStatus* status);
+static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
                                        int number_of_drivers, int number_of_teams);
 void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
@@ -148,7 +148,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         *status=SEASON_MEMORY_ERROR;
         return NULL;
     }
-    driversAndTeamsCounter(&new_season->number_of_drivers,
+    DriversAndTeamsCounter(&new_season->number_of_drivers,
                            &new_season->number_of_teams,season_info,status);
     if (*status==SEASON_MEMORY_ERROR){
         free(new_season);
@@ -187,7 +187,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         if(line_number%3==0){   //Checks if the current line is a team name.
             team_array[current_team++]=TeamCreate(&team_creation_status,season_details);
             if (team_creation_status==TEAM_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
-                driverAndTeamArrayDestroy(driver_array,team_array,
+                DriverAndTeamArrayDestroy(driver_array,team_array,
                                           new_season->number_of_drivers,new_season->number_of_teams);
                 free(new_season);
                 free(season_info_copy);
@@ -197,7 +197,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         else if(!DriverIsNone(season_details,"None")){  //Checks if the current line is a valid driver name.
             driver_array[current_driver++]=DriverCreate(&driver_creation_status,season_details,id++);
             if(driver_creation_status==DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
-                driverAndTeamArrayDestroy(driver_array,team_array,
+                DriverAndTeamArrayDestroy(driver_array,team_array,
                                           new_season->number_of_drivers,new_season->number_of_teams);
                 free(new_season);
                 free(season_info_copy);
@@ -220,7 +220,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
  * @param details - String input that contains the teams and drivers.
  * @param status - Success/fail.
  */
-static void driversAndTeamsCounter(int* drivers, int* teams,
+static void DriversAndTeamsCounter(int* drivers, int* teams,
                                    const char* details,SeasonStatus* status){
     int number_of_drivers=0, number_of_teams=0;
     int line_number=0;
@@ -247,7 +247,7 @@ static void driversAndTeamsCounter(int* drivers, int* teams,
     free(season_details_copy);
 }
 
-static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
+static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
                                        int number_of_drivers, int number_of_teams) {
     for (int i = 0; i < number_of_drivers; i++) {
         DriverDestroy(driver_array[i]);
@@ -266,7 +266,7 @@ static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
  * @param season - A pointer to a season.
  */
 void SeasonDestroy(Season season) {
-    driverAndTeamArrayDestroy(season->drivers_array, season->team_array,
+    DriverAndTeamArrayDestroy(season->drivers_array, season->team_array,
                               season->number_of_drivers,
                               season->number_of_teams);
     free(season);
