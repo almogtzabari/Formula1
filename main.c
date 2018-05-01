@@ -21,7 +21,7 @@ void DriverPrintStatus(DriverStatus status);
 
 
 int main() {
-//    TeamTesting();
+    TeamTesting();
     DriverTesting();
     return 0;
 }
@@ -52,7 +52,7 @@ void TeamTesting(){
     printf("Adding second driver...\n");
     TeamStatus second_driver_status = TeamAddDriver(team,second_driver); // Adding second driver.
     TeamPrintDriverStatus(second_driver_status); // Add second driver to team success/fail.
-    printf("Adding second driver...\n");
+    printf("Adding third driver...\n");
     TeamStatus third_driver_status = TeamAddDriver(team,third_driver); // Attempt to add third driver to a team. Should fail.
     TeamPrintDriverStatus(second_driver_status); // Add third driver to team success/fail.
 
@@ -66,6 +66,7 @@ void TeamTesting(){
 
 void TeamPrint(Team team, TeamStatus status){
     printf("Team Name: %s\n",TeamGetName(team));
+    printf("Team Points: %s\n",TeamGetPoints(team,&status));
     Driver first_driver = TeamGetDriver(team,FIRST_DRIVER);
     Driver second_driver = TeamGetDriver(team,SECOND_DRIVER);
     printf("First Driver: %s\n",DriverGetName(first_driver));
@@ -76,9 +77,9 @@ void TeamPrint(Team team, TeamStatus status){
 
 void TeamPrintDriverStatus(TeamStatus status){
     switch(status){
-        case TEAM_STATUS_OK: printf("Status: successfully added.\n\n"); break;
-        case TEAM_MEMORY_ERROR: printf("Status: memory error.\n\n"); break;
-        case TEAM_FULL: printf("Status: team is full.\n"); break;
+        case TEAM_STATUS_OK: printf("Driver successfully added.\n\n"); break;
+        case TEAM_MEMORY_ERROR: printf("Driver not added: memory error.\n\n"); break;
+        case TEAM_FULL: printf("Driver not added: team is full.\n"); break;
         default: ; break;
     }
 }
@@ -94,7 +95,7 @@ void TeamPrintCreateStatus(TeamStatus status){
 
 
 /** Driver testing functions */
-/* Testing: DriverCreate, DriverGetName, DriverGetId */
+/* Testing: DriverCreate, DriverGetName, DriverGetId, DriverGetPoints */
 void DriverTesting() {
     printf("\n\nStarting DriverTesting() in:\n3...\n2...\n1...\n\n");
     DriverStatus driver_status;
