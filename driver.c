@@ -8,12 +8,11 @@
 
 typedef struct driver {
     int id;
-    const char* driver_name;
+    char* driver_name;
     Team team;
     int points;
     Season season_of_driver;
 } *Driver;
-
 
 
 Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
@@ -21,13 +20,13 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
         *status=DRIVER_MEMORY_ERROR;
         return NULL;
     }
-    char* name=malloc(strlen(driver_name)+1);
+    char* name = malloc(strlen(driver_name)+1);
     if (name==NULL){
         *status=DRIVER_MEMORY_ERROR;
         return NULL;
     }
     strcpy(name,driver_name);
-    Driver driver=malloc(sizeof(*driver));
+    Driver driver = malloc(sizeof(*driver));
     if (driver==NULL){
         *status=DRIVER_MEMORY_ERROR;
         free(name);
@@ -41,8 +40,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
 }
 
 void DriverSetTeam(Driver driver, Team team){
-    assert(driver!=NULL);
-    assert(team!=NULL);
+    assert(driver!=NULL && team!=NULL);
     driver->team=team;
 }
 

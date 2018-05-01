@@ -8,6 +8,11 @@ CMakeFiles/Ex3.dir/driver.c.obj: ../team.h
 
 CMakeFiles/Ex3.dir/main.c.obj: ../main.c
 
+CMakeFiles/Ex3.dir/season.c.obj: ../driver.h
+CMakeFiles/Ex3.dir/season.c.obj: ../season.c
+CMakeFiles/Ex3.dir/season.c.obj: ../season.h
+CMakeFiles/Ex3.dir/season.c.obj: ../team.h
+
 CMakeFiles/Ex3.dir/team.c.obj: ../driver.h
 CMakeFiles/Ex3.dir/team.c.obj: ../season.h
 CMakeFiles/Ex3.dir/team.c.obj: ../team.c

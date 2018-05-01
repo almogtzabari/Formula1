@@ -11,7 +11,7 @@ static int DriverNumberIsValid(DriverNumber driver_number);
 /** End of declarations */
 
 typedef struct team{
-        const char* name;
+        char* name;
         Driver first_driver;
         Driver second_driver;
 }*Team;
@@ -128,7 +128,7 @@ int TeamGetPoints(Team team, TeamStatus *status){
     int sum=0;
     if(team == NULL || status == NULL){
         *status = TEAM_NULL_PTR;
-        return NULL;
+        return 0;
     }
     int points1 = DriverGetPoints(team->first_driver,status);
     /** Check if first driver's points is okay*/

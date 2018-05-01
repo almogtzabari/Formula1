@@ -5,6 +5,12 @@
 #include "driver.h"
 
 
+/** Declarations */
+static void mergeSort(Driver* drivers_array, int l, int r);
+static void merge(Driver* drivers_array, int l, int m, int r);
+
+/** End of declarations*/
+
 typedef struct season {
     int year;
     int number_of_teams;
