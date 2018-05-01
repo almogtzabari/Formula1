@@ -52,7 +52,7 @@ const char* DriverGetName(Driver driver){
     }
     return driver->driver_name;
 }
-s
+
 Team DriverGetTeam(Driver driver){
     if(driver==NULL){
         return NULL;
@@ -62,7 +62,7 @@ Team DriverGetTeam(Driver driver){
 
 int DriverGetId(Driver driver){
     if (driver==NULL){
-        return NULL;
+        return 0;
     }
     return driver->id;
 }
