@@ -212,8 +212,13 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     return new_season;
 }
 
-
-
+/**
+ ***** Function: DriversAndTeamsCounter *****
+ * @param drivers - Will hold the number of drivers.
+ * @param teams - Will hold the number of teams.
+ * @param details - String input that contains the teams and drivers.
+ * @param status - Success/fail.
+ */
 static void driversAndTeamsCounter(int* drivers, int* teams,
                                    const char* details,SeasonStatus* status){
     int number_of_drivers=0, number_of_teams=0;
@@ -224,7 +229,7 @@ static void driversAndTeamsCounter(int* drivers, int* teams,
         return;
     }
     strcpy(season_details_copy,details);
-    char* line=strtok(season_details_copy,"\n");
+    char* line = strtok(season_details_copy,"\n");
     line=strtok(NULL,"\n");
     while(line!=NULL) {
         if (line_number % 3 == 0) {
@@ -253,7 +258,12 @@ static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
     free(team_array);
 }
 
-
+/**
+ ***** Function: SeasonDestroy *****
+ * Description: freeing all allocated memory of season including all the
+ * elements in array: drivers, teams and their pointers.
+ * @param season - A pointer to a season.
+ */
 void SeasonDestroy(Season season) {
     driverAndTeamArrayDestroy(season->drivers_array, season->team_array,
                               season->number_of_drivers,
