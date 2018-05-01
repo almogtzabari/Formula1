@@ -1,0 +1,52 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.c
+stdio.h
+-
+malloc.h
+-
+string.h
+-
+assert.h
+-
+driver.h
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+team.h
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+season.h
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/season.h
+
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/main.c
+stdio.h
+-
+
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/season.h
+team.h
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+driver.h
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.c
+stdio.h
+-
+malloc.h
+-
+string.h
+-
+assert.h
+-
+team.h
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.h
+driver.h
+E:/OneDrive/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.h
+

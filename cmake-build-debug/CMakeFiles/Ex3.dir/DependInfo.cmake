@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_C
   "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/driver.c" "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/cmake-build-debug/CMakeFiles/Ex3.dir/driver.c.obj"
   "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/main.c" "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/cmake-build-debug/CMakeFiles/Ex3.dir/main.c.obj"
+  "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/season.c" "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/cmake-build-debug/CMakeFiles/Ex3.dir/season.c.obj"
   "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/team.c" "C:/Users/Almog/OneDrive - Technion/Simester 3/234122 - Introduction to Systems Programming/Homework/HW2/Formula1/cmake-build-debug/CMakeFiles/Ex3.dir/team.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")

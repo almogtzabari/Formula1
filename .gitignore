@@ -1,2 +1,10 @@
 
 .idea/workspace.xml
+*.txt
+*.xml
+*.iml
+*.exe
+*.cmake
+*.bin
+*.log
+*.make
