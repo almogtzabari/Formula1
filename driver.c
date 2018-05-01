@@ -101,6 +101,12 @@ DriverStatus DriverAddRaceResult(Driver driver, int position){
     return DRIVER_STATUS_OK;
 }
 
+/** Tested: Yes
+ ***** Function: DriverGetPoints *****
+ * @param driver - A pointer to a driver.
+ * @param status - Will hold the success/fail of the function.
+ * @return number of points of 'driver'.
+ */
 int DriverGetPoints(Driver driver, DriverStatus* status){
     if (driver==NULL){
         *status=INVALID_DRIVER;
