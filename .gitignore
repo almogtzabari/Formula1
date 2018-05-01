@@ -8,3 +8,6 @@
 *.bin
 *.log
 *.make
+*.name
+*.obj
+*.idea
