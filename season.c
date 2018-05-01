@@ -149,7 +149,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         free(new_season);
         return NULL;
     }
-    Team* team_array=malloc(sizeof(*team_array)*new_season->number_of_teams);
+    Team* team_array=malloc(sizeof(*team_array)*(new_season->number_of_teams));
     if (team_array==NULL){
         free(new_season);
         free(season_info_copy);
@@ -158,7 +158,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     for (int i=0;i<new_season->number_of_teams;i++) {
         team_array[i]=NULL;
     }
-    Driver* driver_array=malloc(sizeof(*driver_array)*new_season->number_of_drivers);
+    Driver* driver_array=malloc(sizeof(*driver_array)*(new_season->number_of_drivers));
     if (driver_array==NULL){
         free(new_season);
         free(season_info_copy);

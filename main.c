@@ -117,8 +117,10 @@ void DriverTesting() {
 }
 
 void DriverPrint(Driver driver){
+    DriverStatus status;
     printf("Driver Name: %s\n",DriverGetName(driver));
-    printf("Driver ID: %d\n\n",DriverGetId(driver));
+    printf("Driver ID: %d\n",DriverGetId(driver));
+    printf("Driver Points: %d\n\n",DriverGetPoints(driver, &status));
 }
 
 void DriverPrintStatus(DriverStatus status){
