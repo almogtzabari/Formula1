@@ -15,6 +15,8 @@ static void driverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
 void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
 static bool DriverIsNone(char* name, char* source );
+int SeasonGetNumberOfTeams(Season season);
+
 
 /** End of declarations*/
 
@@ -270,4 +272,9 @@ static bool DriverIsNone(char* name, char* source ){
         }
     }
     return true;
+}
+
+int SeasonGetNumberOfTeams(Season season){
+    assert(season!=NULL);
+    return season->number_of_teams;
 }

@@ -22,6 +22,9 @@ int main() {
     TeamTesting();
     printf("------------------------------------------------------------");
     DriverTesting();
+    SeasonStatus status=SEASON_OK;
+    char string[] = "195\nshishkabab\nNone\nBiter\nfsdds\ndsff\nsdfdsfs\nkaka\nkak\nmcm";
+    Season avi=SeasonCreate(&status,string);
     return 0;
 }
 
