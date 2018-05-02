@@ -10,8 +10,7 @@
 static void mergeSort(Driver* drivers_array, int l, int r);
 static void merge(Driver* drivers_array, int l, int m, int r);
 static void DriversAndTeamsCounter(int* drivers, int* teams, const char* details,SeasonStatus* status);
-static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
-                                       int number_of_drivers, int number_of_teams);
+static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array, int number_of_drivers, int number_of_teams);
 void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
 static bool DriverIsNone(char* name, char* source );
