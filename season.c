@@ -14,7 +14,8 @@ static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array, i
 void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
 static bool DriverIsNone(char* name, char* source );
-int SeasonGetNumberOfTeams(Season season);
+SeasonStatus SeasonAddRaceResult(Season season, int* results);
+Driver* SeasonGetDriversStandings(Season season);
 static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers);
 static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers);
 
@@ -29,30 +30,18 @@ typedef struct season {
     Driver* drivers_array;
 } *Season;
 
-/**
- ****** Function: SeasonGetDriverByPosition *****
- * @param season - Pointer to a season.
- * @param position - A number in the rank range.
- * @param status - Will hold success/fail of the function.
- * @return A pointer to the desired driver.
- */
-Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status){
-    /** Checks if the position is legal. */
-    if(position<1 || position>(season->number_of_drivers)) {
-        *status = INVALID_POSITION;
-        return NULL;
+
+SeasonStatus SeasonAddRaceResult(Season season, int* results){
+    if (season==NULL || results==NULL){
+        *results=SEASON_NULL_PTR;
+        return SEASON_NULL_PTR;
     }
-    /** Sorting drivers array of 'season' from lowest to highest rank
-     * and returns a pointer to the array. */
-    Driver* driver_array = SeasonGetDriversStandings(season);
-    return driver_array[(season->number_of_drivers)-position];
+    for (int i=0;i<SeasonGetNumberOfDrivers(season);i++) {
+        DriverAddRaceResult(season->drivers_array[results[i]-1],i+1);
+    }
+    return SEASON_OK;
 }
 
-/**
- ***** Function: SeasonGetDriverStandings *****
- * @param season - Pointer to a season.
- * @return A sorted array of drivers in the given season.
- */
 Driver* SeasonGetDriversStandings(Season season){
     assert(season!=NULL);
     Driver* drivers_standings = malloc(sizeof(*drivers_standings)*season->number_of_drivers);
@@ -100,6 +89,7 @@ static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers){
     points[index_of_max] = -1;
     return index_of_max;
 }
+
 /**
  ***** Function: SeasonCreate *****
  * @param status - Will hold success/fail of the function.
@@ -260,3 +250,4 @@ int SeasonGetNumberOfTeams(Season season){
     assert(season!=NULL);
     return season->number_of_teams;
 }
+
