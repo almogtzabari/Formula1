@@ -97,7 +97,7 @@ DriverStatus DriverAddRaceResult(Driver driver, int position){
     if(driver==NULL){
         return INVALID_DRIVER;
     }
-    driver->points+=SeasonGetNumberOfDrivers(driver->season_of_driver)-position;
+    driver->points+=(SeasonGetNumberOfDrivers(driver->season_of_driver)-position);
     return DRIVER_STATUS_OK;
 }
 

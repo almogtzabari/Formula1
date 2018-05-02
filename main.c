@@ -150,19 +150,24 @@ void SeasonTesting(){
     SeasonStatus season_status;
     char* string = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
     Season season = SeasonCreate(&season_status,string);
+    int test_results [7] = {2,3,1,5,4,7,6};
+    SeasonAddRaceResult(season,test_results);
     SeasonPrint(season);
 }
 
 void SeasonPrint(Season season){
     int number_of_teams = SeasonGetNumberOfTeams(season);
     int number_of_drivers = SeasonGetNumberOfDrivers(season);
+    DriverStatus status;
     printf("Number of teams in season: %d\n",number_of_teams);
 //    Team* teams_array = SeasonGetTeamsStandings(season);
     Driver* drivers_array = SeasonGetDriversStandings(season);
     for(int i=0;i<number_of_drivers;i++){
         Driver driver = drivers_array[i];
         printf("driver name: %s\n",DriverGetName(driver));
+        printf("Points: %d\n",DriverGetPoints(driver,&status));
     }
     printf("Number of drivers in season: %d\n",number_of_drivers);
 }
 /***** End of season testing functions *****/
+
