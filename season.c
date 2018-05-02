@@ -16,6 +16,8 @@ void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
 static bool DriverIsNone(char* name, char* source );
 int SeasonGetNumberOfTeams(Season season);
+static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers);
+static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers);
 
 
 /** End of declarations*/
@@ -53,86 +55,52 @@ Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* stat
  * @return A sorted array of drivers in the given season.
  */
 Driver* SeasonGetDriversStandings(Season season){
-    mergeSort(season->drivers_array, 0, season->number_of_drivers-1);
-    return season->drivers_array;
+    assert(season!=NULL);
+    Driver* drivers_standings = malloc(sizeof(*drivers_standings)*season->number_of_drivers);
+    if(drivers_standings == NULL){
+        return NULL;
+    }
+    int* drivers_points_array = malloc(sizeof(*drivers_points_array)*season->number_of_drivers);
+    if(drivers_points_array == NULL){
+        free(drivers_standings);
+        return NULL;
+    }
+    /* drivers_points_array will hold the points of the drivers.
+     * drivers_points_array[i] will contain the number of points of
+     * the driver i.  */
+    DriversArrayToPointsArray(drivers_points_array, season->drivers_array, season->number_of_drivers);
+    /* Sorting the drivers by points. The driver with the highest score
+     * will be stored at driver_standings[0], and so on.*/
+    for(int i=0;i<season->number_of_drivers;i++){
+        drivers_standings[i] = season->drivers_array[FindIndexOfMaxPointsDriver(drivers_points_array,season->number_of_drivers)];
+    }
+    free(drivers_points_array);
+    return drivers_standings;
 }
 
-/** Merge Sort */
-/* TODO: check if the sort is okay. */
-static void merge(Driver* drivers_array, int l, int m, int r)
-{
-    int i, j, k;
+static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers){
     DriverStatus status;
-    int n1 = m - l + 1;
-    int n2 =  r - m;
-
-    /** create temp arrays */
-    Driver* L = malloc(sizeof(Driver)*n1);
-    Driver* R = malloc(sizeof(Driver)*n2);
-    /* Copy data to temp arrays L and R */
-    for (i = 0; i < n1; i++)
-        L[i] = drivers_array[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = drivers_array[m + 1+ j];
-
-    /** Merge the temp arrays back into drivers_array. */
-    i = 0; // Initial index of first subarray
-    j = 0; // Initial index of second subarray
-    k = l; // Initial index of merged subarray
-    while (i < n1 && j < n2)
-    {
-        if (DriverGetPoints(L[i],&status) <= DriverGetPoints(R[j],&status))
-        {
-            drivers_array[k] = L[i];
-            i++;
+    int points_of_driver_i;
+    for(int i=0;i<number_of_drivers;i++){
+        points_of_driver_i = DriverGetPoints(drivers_array[i],&status);
+        if (status == DRIVER_STATUS_OK){
+            drivers_points[i] = points_of_driver_i;
         }
-        else
-        {
-            drivers_array[k] = R[j];
-            j++;
-        }
-        k++;
-    }
-
-    /* Copy the remaining elements of L[], if there
-       are any */
-    while (i < n1)
-    {
-        drivers_array[k] = L[i];
-        i++;
-        k++;
-    }
-
-    /* Copy the remaining elements of R[], if there
-       are any */
-    while (j < n2)
-    {
-        drivers_array[k] = R[j];
-        j++;
-        k++;
-    }
-    free(L);
-    free(R);
-}
-
-/* l is for left index and r is right index of the
-   sub-array of drivers_array to be sorted */
-static void mergeSort(Driver* drivers_array, int l, int r)
-{
-    if (l < r)
-    {
-        // Same as (l+r)/2, but avoids overflow for
-        // large l and h
-        int m = l+(r-l)/2;
-
-        // Sort first and second halves
-        mergeSort(drivers_array, l, m);
-        mergeSort(drivers_array, m+1, r);
-        merge(drivers_array, l, m, r);
+        // todo: free memory in case of another status?
     }
 }
-/** End of merge sort*/
-
+static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers){
+    int max = points[0];
+    int index_of_max = 0;
+    for(int i=1;i<number_of_drivers;i++){
+        if(points[i]>max){
+            max = points[i];
+            index_of_max = i;
+        }
+    }
+    points[index_of_max] = -1;
+    return index_of_max;
+}
 /**
  ***** Function: SeasonCreate *****
  * @param status - Will hold success/fail of the function.
