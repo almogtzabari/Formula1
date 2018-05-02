@@ -7,8 +7,6 @@
 
 
 /** Declarations */
-static void mergeSort(Driver* drivers_array, int l, int r);
-static void merge(Driver* drivers_array, int l, int m, int r);
 static void DriversAndTeamsCounter(int* drivers, int* teams, const char* details,SeasonStatus* status);
 static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array, int number_of_drivers, int number_of_teams);
 void SeasonDestroy(Season season);
@@ -33,7 +31,6 @@ typedef struct season {
 
 SeasonStatus SeasonAddRaceResult(Season season, int* results){
     if (season==NULL || results==NULL){
-        *results=SEASON_NULL_PTR;
         return SEASON_NULL_PTR;
     }
     for (int i=0;i<SeasonGetNumberOfDrivers(season);i++) {
@@ -44,7 +41,7 @@ SeasonStatus SeasonAddRaceResult(Season season, int* results){
 
 Driver* SeasonGetDriversStandings(Season season){
     assert(season!=NULL);
-    Driver* drivers_standings = malloc(sizeof(*drivers_standings)*season->number_of_drivers);
+    Driver* drivers_standings = malloc(sizeof(*drivers_standings)*season->number_of_drivers); // todo: where do we free array?
     if(drivers_standings == NULL){
         return NULL;
     }
@@ -153,6 +150,8 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         }
         else if(!DriverIsNone(line,"None")){  //Checks if the current line is a valid driver name.
             drivers_array[drivers_index++] = DriverCreate(&driver_creation_status,line,id++);
+            DriverSetSeason(drivers_array[drivers_index-1],new_season); // Adding the driver to the season.
+            DriverSetTeam(drivers_array[drivers_index-1],teams_array[teams_index-1]); // Adding the driver to the team.
             if(driver_creation_status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 DriverAndTeamArrayDestroy(drivers_array,teams_array,
                                           new_season->number_of_drivers,new_season->number_of_teams);

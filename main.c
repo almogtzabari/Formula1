@@ -143,6 +143,8 @@ void DriverPrintCreateStatus(DriverStatus status){
         default: ; break;
     }
 }
+
+void DriverPrintArray
 /***** End of driver testing functions *****/
 
 /***** Season testing functions *****/
@@ -150,8 +152,9 @@ void SeasonTesting(){
     SeasonStatus season_status;
     char* string = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
     Season season = SeasonCreate(&season_status,string);
-    int test_results [7] = {2,3,1,5,4,7,6};
+    int test_results [7] = {1,3,2,5,4,7,6};
     SeasonAddRaceResult(season,test_results);
+//    DriverPrint(SeasonGetDriverByPosition(season,2,&season_status));
     SeasonPrint(season);
 }
 

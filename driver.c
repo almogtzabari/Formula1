@@ -34,7 +34,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     }
     driver->id=driverId;
     driver->driver_name=name;
-    driver->season_of_driver=NULL;
+    driver->season_of_driver = NULL;
     driver->points = 0;
     *status=DRIVER_STATUS_OK;
     return driver;
@@ -83,7 +83,7 @@ void DriverDestroy(Driver driver){
 void DriverSetSeason(Driver driver, Season season){
     assert(driver!=NULL);
     assert(season!=NULL);
-    driver->season_of_driver=season;
+    driver->season_of_driver = season;
     driver->points=0;
 }
 
@@ -94,7 +94,7 @@ DriverStatus DriverAddRaceResult(Driver driver, int position){
     if(driver->season_of_driver==NULL){
         return SEASON_NOT_ASSIGNED;
     }
-    if(driver==NULL){
+    if(driver == NULL){
         return INVALID_DRIVER;
     }
     driver->points+=(SeasonGetNumberOfDrivers(driver->season_of_driver)-position);
