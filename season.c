@@ -15,7 +15,7 @@ static bool DriverIsNone(char* name, char* source );
 SeasonStatus SeasonAddRaceResult(Season season, int* results);
 Driver* SeasonGetDriversStandings(Season season);
 static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers);
-static int FindIndexOfMaxPointsDriver(int* points,int* last_race_results_array, int number_of_drivers);
+static int FindIndexOfMaxPointsDriver(Season season, int* points, int number_of_drivers);
 static int FindLastPositionById(Season season, int id);
 
 
@@ -61,7 +61,9 @@ Driver* SeasonGetDriversStandings(Season season){
      * will be stored at driver_standings[0], and so on.*/
     int driver_index;
     for(int i=0;i<season->number_of_drivers;i++){
-        driver_index = FindIndexOfMaxPointsDriver(drivers_points_array,season->number_of_drivers);
+        /* driver_index is holding the index of the driver who
+         * has the greatest score. */
+        driver_index = FindIndexOfMaxPointsDriver(season,drivers_points_array,season->number_of_drivers);
         drivers_standings[i] = season->drivers_array[driver_index];
     }
     free(drivers_points_array);
@@ -78,7 +80,7 @@ static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array
         // todo: free memory in case of another status?
     }
 }
-static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers){
+static int FindIndexOfMaxPointsDriver(Season season, int* points, int number_of_drivers){
     int max = points[0];
     int index_of_max = 0;
     for(int i=1;i<number_of_drivers;i++){
@@ -87,7 +89,7 @@ static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers){
             index_of_max = i;
         }
         else if(points[i] == max){
-            if(FindLastPositionById(i)<FindLastPositionById(index_of_max)){
+            if(FindLastPositionById(season,i+1)<FindLastPositionById(season,index_of_max+1)){
                 index_of_max = i;
             }
         }
@@ -186,6 +188,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         free(season_info_copy);
         free(new_season);
     }
+    new_season->last_race_results_array = last_race_results_array;
     free(season_info_copy);
     return new_season;
 }
