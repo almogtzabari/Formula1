@@ -154,15 +154,14 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         free(new_season);
         return NULL;
     }
-    int temp=strlen(season_info);
     char* season_info_copy=malloc((strlen(season_info))+1);
-    if(season_info_copy==NULL){
+    if(season_info_copy==NULL){ //If allocation fails frees all the allocated elements.
         *status=SEASON_MEMORY_ERROR;
         free(new_season);
         return NULL;
     }
     Team* team_array=malloc(sizeof(*team_array)*(new_season->number_of_teams));
-    if (team_array==NULL){
+    if (team_array==NULL){ //If allocation fails frees all the allocated elements.
         free(new_season);
         free(season_info_copy);
         return NULL;
@@ -171,23 +170,23 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         team_array[i]=NULL;
     }
     Driver* driver_array=malloc(sizeof(*driver_array)*new_season->number_of_drivers);
-    if (driver_array==NULL){
+    if (driver_array==NULL){    //If allocation fails frees all the allocated elements.
         free(new_season);
         free(season_info_copy);
         free(team_array);
         return NULL;
     }
-    for (int j=0;j<new_season->number_of_drivers;j++) {
-        driver_array[j]=NULL;
+    for (int j=0;j<new_season->number_of_drivers;j++) { //Setting array pointers to NULL which helps if
+        driver_array[j]=NULL;                           //memory allocation fails.
     }
     strcpy(season_info_copy,season_info);
     char* season_details=strtok(season_info_copy,"\n");
     new_season->year=atoi(season_details);
     season_details=strtok(NULL,"\n");
     while(season_details!=NULL){
-        if(line_number%3==0){
+        if(line_number%3==0){   //Checks if the current line is a team name.
             team_array[current_team++]=TeamCreate(&team_creation_status,season_details);
-            if (team_creation_status==TEAM_MEMORY_ERROR){
+            if (team_creation_status==TEAM_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 driverAndTeamArrayDestroy(driver_array,team_array,
                                           new_season->number_of_drivers,new_season->number_of_teams);
                 free(new_season);
@@ -195,9 +194,9 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
                 return NULL;
             }
         }
-        else if(!DriverIsNone(season_details,"None")){
+        else if(!DriverIsNone(season_details,"None")){  //Checks if the current line is a valid driver name.
             driver_array[current_driver++]=DriverCreate(&driver_creation_status,season_details,id++);
-            if(driver_creation_status==DRIVER_MEMORY_ERROR){
+            if(driver_creation_status==DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 driverAndTeamArrayDestroy(driver_array,team_array,
                                           new_season->number_of_drivers,new_season->number_of_teams);
                 free(new_season);

@@ -23,7 +23,7 @@ int main() {
     printf("------------------------------------------------------------");
     DriverTesting();
     SeasonStatus status=SEASON_OK;
-    char string[] = "195\nshishkabab\nNone\nBiter\nfsdds\ndsff\nsdfdsfs\nkaka\nkak\nmcm";
+    char string[] = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
     Season avi=SeasonCreate(&status,string);
     return 0;
 }
