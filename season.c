@@ -15,9 +15,11 @@ static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
 void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
 static bool DriverIsNone(char* name, char* source );
-int SeasonGetNumberOfTeams(Season season);
 SeasonStatus SeasonAddRaceResult(Season season, int* results);
 Driver* SeasonGetDriversStandings(Season season);
+static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers);
+static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers);
+
 
 /** End of declarations*/
 
@@ -30,13 +32,6 @@ typedef struct season {
 } *Season;
 
 
-Driver* SeasonGetDriversStandings(Season season){
-    Driver* sorted_driver_array=malloc(
-            sizeof(*sorted_driver_array)*SeasonGetNumberOfDrivers(season));
-
-    return season->drivers_array;
-}
-
 SeasonStatus SeasonAddRaceResult(Season season, int* results){
     if (season==NULL || results==NULL){
         *results=SEASON_NULL_PTR;
@@ -46,6 +41,54 @@ SeasonStatus SeasonAddRaceResult(Season season, int* results){
         DriverAddRaceResult(season->drivers_array[results[i]-1],i+1);
     }
     return SEASON_OK;
+}
+
+Driver* SeasonGetDriversStandings(Season season){
+    assert(season!=NULL);
+    Driver* drivers_standings = malloc(sizeof(*drivers_standings)*season->number_of_drivers);
+    if(drivers_standings == NULL){
+        return NULL;
+    }
+    int* drivers_points_array = malloc(sizeof(*drivers_points_array)*season->number_of_drivers);
+    if(drivers_points_array == NULL){
+        free(drivers_standings);
+        return NULL;
+    }
+    /* drivers_points_array will hold the points of the drivers.
+     * drivers_points_array[i] will contain the number of points of
+     * the driver i.  */
+    DriversArrayToPointsArray(drivers_points_array, season->drivers_array, season->number_of_drivers);
+    /* Sorting the drivers by points. The driver with the highest score
+     * will be stored at driver_standings[0], and so on.*/
+    for(int i=0;i<season->number_of_drivers;i++){
+        drivers_standings[i] = season->drivers_array[FindIndexOfMaxPointsDriver(drivers_points_array,season->number_of_drivers)];
+    }
+    free(drivers_points_array);
+    return drivers_standings;
+}
+
+static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers){
+    DriverStatus status;
+    int points_of_driver_i;
+    for(int i=0;i<number_of_drivers;i++){
+        points_of_driver_i = DriverGetPoints(drivers_array[i],&status);
+        if (status == DRIVER_STATUS_OK){
+            drivers_points[i] = points_of_driver_i;
+        }
+        // todo: free memory in case of another status?
+    }
+}
+static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers){
+    int max = points[0];
+    int index_of_max = 0;
+    for(int i=1;i<number_of_drivers;i++){
+        if(points[i]>max){
+            max = points[i];
+            index_of_max = i;
+        }
+    }
+    points[index_of_max] = -1;
+    return index_of_max;
 }
 
 /**
