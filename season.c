@@ -15,7 +15,8 @@ static bool DriverIsNone(char* name, char* source );
 SeasonStatus SeasonAddRaceResult(Season season, int* results);
 Driver* SeasonGetDriversStandings(Season season);
 static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers);
-static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers);
+static int FindIndexOfMaxPointsDriver(int* points,int* last_race_results_array, int number_of_drivers);
+static int FindLastPositionById(Season season, int id);
 
 
 /** End of declarations*/
@@ -26,6 +27,7 @@ typedef struct season {
     Team* team_array;
     int number_of_drivers;
     Driver* drivers_array;
+    int* last_race_results_array;
 } *Season;
 
 
@@ -35,6 +37,7 @@ SeasonStatus SeasonAddRaceResult(Season season, int* results){
     }
     for (int i=0;i<SeasonGetNumberOfDrivers(season);i++) {
         DriverAddRaceResult(season->drivers_array[results[i]-1],i+1);
+        season->last_race_results_array[i] = results[i];
     }
     return SEASON_OK;
 }
@@ -56,13 +59,14 @@ Driver* SeasonGetDriversStandings(Season season){
     DriversArrayToPointsArray(drivers_points_array, season->drivers_array, season->number_of_drivers);
     /* Sorting the drivers by points. The driver with the highest score
      * will be stored at driver_standings[0], and so on.*/
+    int driver_index;
     for(int i=0;i<season->number_of_drivers;i++){
-        drivers_standings[i] = season->drivers_array[FindIndexOfMaxPointsDriver(drivers_points_array,season->number_of_drivers)];
+        driver_index = FindIndexOfMaxPointsDriver(drivers_points_array,season->number_of_drivers);
+        drivers_standings[i] = season->drivers_array[driver_index];
     }
     free(drivers_points_array);
     return drivers_standings;
 }
-
 static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers){
     DriverStatus status;
     int points_of_driver_i;
@@ -82,9 +86,21 @@ static int FindIndexOfMaxPointsDriver(int* points, int number_of_drivers){
             max = points[i];
             index_of_max = i;
         }
+        else if(points[i] == max){
+            if(FindLastPositionById(i)<FindLastPositionById(index_of_max)){
+                index_of_max = i;
+            }
+        }
     }
     points[index_of_max] = -1;
     return index_of_max;
+}
+static int FindLastPositionById(Season season, int id){
+    for(int i=0;i<season->number_of_drivers;i++){
+        if(season->last_race_results_array[i] == id)
+            return i+1;
+    }
+    return 0;
 }
 
 /**
@@ -162,9 +178,15 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         }
         line = strtok(NULL,"\n");
     }
-    free(season_info_copy);
     new_season->team_array = teams_array;
     new_season->drivers_array = drivers_array;
+    int* last_race_results_array = malloc(sizeof(*last_race_results_array)*new_season->number_of_drivers);
+    if(last_race_results_array == NULL) {
+        DriverAndTeamArrayDestroy(drivers_array, teams_array, new_season->number_of_drivers, new_season->number_of_teams);
+        free(season_info_copy);
+        free(new_season);
+    }
+    free(season_info_copy);
     return new_season;
 }
 

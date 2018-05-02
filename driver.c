@@ -6,13 +6,16 @@
 
 #define MIN_POSITION 1
 
+/** Declarations */
+
+/** End of decalarations */
+
 typedef struct driver {
     int id;
     char* driver_name;
     Team team;
     int points;
     Season season_of_driver;
-    int last_race_position;
 } *Driver;
 
 
@@ -37,7 +40,6 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     driver->driver_name=name;
     driver->season_of_driver = NULL;
     driver->points = 0;
-    driver->last_race_position = 0;
     *status=DRIVER_STATUS_OK;
     return driver;
 }
