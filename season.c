@@ -228,9 +228,6 @@ static void DriversAndTeamsCounter(int* drivers, int* teams,
 
 static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
                                        int number_of_drivers, int number_of_teams) {
-    for (int i = 0; i < number_of_drivers; i++) {
-        DriverDestroy(driver_array[i]);
-    }
     for (int j = 0; j < number_of_teams; j++) {
         TeamDestroy(team_array[j]);
     }
