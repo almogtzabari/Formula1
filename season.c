@@ -315,8 +315,7 @@ static int FindCurrentWinningTeam (Season season, int* points, int number_of_tea
     int winning_team_index=0;
     DriverStatus status;
     int max_team_points=points[0];
-    for (int i=0;i<number_of_teams,i!=winning_team_index;i++) {
-            if(points[i]!=-1 && max_team_points!=-1) {
+    for (int i=1;i<number_of_teams,i!=winning_team_index;i++) {
                 if (points[i] > points[max_team_points]) {
                     max_team_points = points[i];
                     winning_team_index = i;
@@ -328,7 +327,6 @@ static int FindCurrentWinningTeam (Season season, int* points, int number_of_tea
                         winning_team_index = i;
                     }
                 }
-            }
     }
     points[winning_team_index]=-1;
     return winning_team_index;
