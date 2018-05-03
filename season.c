@@ -22,6 +22,7 @@ Team* SeasonGetTeamsStandings(Season season);
 static int FindCurrentWinningTeam (Season season, int* points, int number_of_teams);
 static int FindBestTeamDriverPosition (Season season,Team team);
 Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status);
+Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status);
 
 
 
@@ -316,7 +317,6 @@ Team* SeasonGetTeamsStandings(Season season){
 
 static int FindCurrentWinningTeam (Season season, int* points, int number_of_teams){
     int winning_team_index=0;
-    DriverStatus status;
     int max_team_points=points[0];
     for (int i=1;i<number_of_teams;i++) {
                 if (points[i] > max_team_points) {
@@ -352,3 +352,5 @@ Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
     Team* sorted_team_array=SeasonGetTeamsStandings(season);
     return sorted_team_array[position-1];
 }
+
+Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status);
