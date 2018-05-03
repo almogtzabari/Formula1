@@ -6,6 +6,7 @@
 #include "driver.h"
 
 
+
 /** Declarations */
 static void DriversAndTeamsCounter(int* drivers, int* teams, const char* details,SeasonStatus* status);
 static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array, int number_of_drivers, int number_of_teams);
@@ -17,6 +18,10 @@ Driver* SeasonGetDriversStandings(Season season);
 static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers);
 static int FindIndexOfMaxPointsDriver(Season season, int* points, int number_of_drivers);
 static int FindLastPositionById(Season season, int id);
+Team* SeasonGetTeamsStandings(Season season);
+static int FindCurrentWinningTeam (Season season, int* points, int number_of_teams);
+static int FindBestTeamDriverPosition (Season season,Team team);
+
 
 
 /** End of declarations*/
@@ -273,5 +278,69 @@ static bool DriverIsNone(char* name, char* source ){
 int SeasonGetNumberOfTeams(Season season){
     assert(season!=NULL);
     return season->number_of_teams;
+}
+
+Team* SeasonGetTeamsStandings(Season season){
+    Team* sorted_team_array=malloc(sizeof(*sorted_team_array)*season->number_of_teams);
+    TeamStatus status;
+    int index_of_current_winning_team=0;
+    if(sorted_team_array==NULL){
+        return NULL;
+    }
+    int* team_points_array=malloc(sizeof(team_points_array)*season->number_of_teams);
+    if(team_points_array==NULL){
+        free(sorted_team_array);
+        return NULL;
+    }
+    // Team points array will contain in index i the number of points of team
+    //i in the teams array found in the season.
+    for (int i=0;i<season->number_of_teams;i++) {
+        team_points_array[i]=TeamGetPoints(season->team_array[i],&status);
+        if (status==NULL){
+            free(sorted_team_array);
+            free(team_points_array);
+            return NULL;
+        }
+    }
+    for (int j=0;j<season->number_of_teams;j++) {
+        index_of_current_winning_team=FindCurrentWinningTeam(
+                season,team_points_array,season->number_of_teams);
+        sorted_team_array[j]=season->team_array[index_of_current_winning_team];
+    }
+    free(team_points_array);
+    return sorted_team_array;
+ }
+
+static int FindCurrentWinningTeam (Season season, int* points, int number_of_teams){
+    int winning_team_index=0;
+    DriverStatus status;
+    int max_team_points=points[0];
+    for (int i=0;i<number_of_teams,i!=winning_team_index;i++) {
+            if(points[i]!=-1 && max_team_points!=-1) {
+                if (points[i] > points[max_team_points]) {
+                    max_team_points = points[i];
+                    winning_team_index = i;
+                } else if (points[i] == points[winning_team_index]) {
+                    if (FindBestTeamDriverPosition(season,
+                                                   season->team_array[i]) <
+                        FindBestTeamDriverPosition(season,
+                                                   season->team_array[winning_team_index])) {
+                        winning_team_index = i;
+                    }
+                }
+            }
+    }
+    points[winning_team_index]=-1;
+    return winning_team_index;
+}
+
+static int FindBestTeamDriverPosition (Season season,Team team){
+    int first_driver_position,second_driver_position;
+    first_driver_position=(FindLastPositionById(season,DriverGetId(TeamGetDriver(team,FIRST_DRIVER))));
+    second_driver_position=(FindLastPositionById(season,DriverGetId(TeamGetDriver(team,SECOND_DRIVER))));
+    if(first_driver_position<second_driver_position){
+        return first_driver_position;
+    }
+    return second_driver_position;
 }
 
