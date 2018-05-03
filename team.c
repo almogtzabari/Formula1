@@ -11,11 +11,11 @@ void TeamPrint(Team team);
 
 /** End of declarations */
 
-typedef struct team{
+struct team{
         char* name;
         Driver first_driver;
         Driver second_driver;
-}*Team;
+};
 
 /**
  ***** TeamCreate *****

@@ -10,13 +10,13 @@
 
 /** End of decalarations */
 
-typedef struct driver {
+struct driver {
     int id;
     char* driver_name;
     Team team;
     int points;
     Season season_of_driver;
-} *Driver;
+};
 
 
 Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
@@ -36,6 +36,11 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
         free(name);
         return NULL;
     }
+//    if(driverId<0){
+//        *status=DRIVER_MEMORY_ERROR;
+//        free(name);
+//        return NULL;
+//    }
     driver->id=driverId;
     driver->driver_name=name;
     driver->season_of_driver = NULL;

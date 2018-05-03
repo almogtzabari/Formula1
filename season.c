@@ -31,14 +31,14 @@ static int* SeasonLastRaceResultsArrayAllocation(Season season,char* season_info
 
 /** End of declarations*/
 
-typedef struct season {
+struct season {
     int year;
     int number_of_teams;
     Team* team_array;
     int number_of_drivers;
     Driver* drivers_array;
     int* last_race_results_array;
-} *Season;
+};
 
 
 SeasonStatus SeasonAddRaceResult(Season season, int* results){
