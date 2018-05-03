@@ -246,6 +246,7 @@ void SeasonDestroy(Season season) {
                               season->number_of_drivers,
                               season->number_of_teams);
     free(season);
+    free(season->last_race_results_array);
 }
 
 int SeasonGetNumberOfDrivers(Season season){
