@@ -150,11 +150,12 @@ void DriverPrintCreateStatus(DriverStatus status){
 /***** Season testing functions *****/
 void SeasonTesting(){
     SeasonStatus season_status;
+    TeamStatus team_status;
+    DriverStatus status;
     char* string = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
     Season season = SeasonCreate(&season_status,string);
-    int test_results [7] = {1,3,2,5,4,7,6};
+    int test_results [7] = {5,6,2,1,4,7,3};
     SeasonAddRaceResult(season,test_results);
-//    DriverPrint(SeasonGetDriverByPosition(season,2,&season_status));
     SeasonPrint(season);
 }
 

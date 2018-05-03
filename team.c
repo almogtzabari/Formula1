@@ -134,7 +134,7 @@ int TeamGetPoints(Team team, TeamStatus *status){
         *status = TEAM_NULL_PTR;
         return 0;
     }
-    int points1 = DriverGetPoints(team->first_driver,&driver_status);
+    int points1 =DriverGetPoints(team->first_driver,&driver_status);
     /** Check if first driver's points is okay*/
     if(driver_status == DRIVER_STATUS_OK){
         sum+=points1;

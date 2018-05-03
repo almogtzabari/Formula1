@@ -345,7 +345,7 @@ static int FindBestTeamDriverPosition (Season season,Team team){
 }
 
 Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
-    if(position<1 || position>season->number_of_drivers){
+    if(position<1 || position>season->number_of_teams){
         *status=SEASON_NULL_PTR; //Check if legal, because its not supposed to be null ptr
         return NULL;
     }
@@ -353,4 +353,11 @@ Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
     return sorted_team_array[position-1];
 }
 
-Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status);
+Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status){
+    if(position<1 || position>season->number_of_drivers){
+        *status=SEASON_NULL_PTR; //Check if legal, because its not supposed to be null ptr
+        return NULL;
+    }
+    Driver* sorted_driver_array=SeasonGetDriversStandings(season);
+    return sorted_driver_array[position-1];
+}
