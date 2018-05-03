@@ -144,7 +144,7 @@ void DriverPrintCreateStatus(DriverStatus status){
     }
 }
 
-void DriverPrintArray
+
 /***** End of driver testing functions *****/
 
 /***** Season testing functions *****/
