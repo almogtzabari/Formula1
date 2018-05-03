@@ -21,6 +21,7 @@ static int FindLastPositionById(Season season, int id);
 Team* SeasonGetTeamsStandings(Season season);
 static int FindCurrentWinningTeam (Season season, int* points, int number_of_teams);
 static int FindBestTeamDriverPosition (Season season,Team team);
+Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status);
 
 
 
@@ -281,9 +282,10 @@ int SeasonGetNumberOfTeams(Season season){
 }
 
 Team* SeasonGetTeamsStandings(Season season){
-    Team* sorted_team_array=malloc(sizeof(*sorted_team_array)*season->number_of_teams);
+    assert(season!=NULL);
     TeamStatus status;
     int index_of_current_winning_team=0;
+    Team* sorted_team_array=malloc(sizeof(*sorted_team_array)*season->number_of_teams);
     if(sorted_team_array==NULL){
         return NULL;
     }
@@ -294,7 +296,7 @@ Team* SeasonGetTeamsStandings(Season season){
     }
     // Team points array will contain in index i the number of points of team
     //i in the teams array found in the season.
-    for (int i=0;i<season->number_of_teams;i++) {
+    for (int i=0;i<(season->number_of_teams);i++) {
         team_points_array[i]=TeamGetPoints(season->team_array[i],&status);
         if (status==TEAM_NULL_PTR){
             free(sorted_team_array);
@@ -316,11 +318,11 @@ static int FindCurrentWinningTeam (Season season, int* points, int number_of_tea
     DriverStatus status;
     int max_team_points=points[0];
     for (int i=1;i<number_of_teams,i!=winning_team_index;i++) {
-                if (points[i] > points[max_team_points]) {
+                if (points[i] > max_team_points) {
                     max_team_points = points[i];
                     winning_team_index = i;
                 }
-                else if (points[i] == points[winning_team_index]) {
+                else if (points[i] == max_team_points) {
                         if (FindBestTeamDriverPosition(season,season->team_array[i]) <
                             FindBestTeamDriverPosition(season,season->team_array[winning_team_index])) {
                             winning_team_index = i;
@@ -341,3 +343,11 @@ static int FindBestTeamDriverPosition (Season season,Team team){
     return second_driver_position;
 }
 
+Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
+    if(position<1 || position>season->number_of_drivers){
+        *status=SEASON_NULL_PTR; //Check if legal, because its not supposed to be null ptr
+        return NULL;
+    }
+    Team* sorted_team_array=SeasonGetTeamsStandings(season);
+    return sorted_team_array[position-1];
+}
