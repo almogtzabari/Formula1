@@ -48,7 +48,6 @@ SeasonStatus SeasonAddRaceResult(Season season, int* results){
     for (int i=0;i<SeasonGetNumberOfDrivers(season);i++) {
         DriverAddRaceResult(season->drivers_array[results[i]-1],i+1);
         season->last_race_results_array[i] = results[i];
-        printf("last race results[%d] = %d\n",i,season->last_race_results_array[i]);
     }
     return SEASON_OK;
 }
