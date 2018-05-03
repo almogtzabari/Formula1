@@ -85,21 +85,20 @@ void DriverDestroy(Driver driver){
 }
 
 void DriverSetSeason(Driver driver, Season season){
-    assert(driver!=NULL);
-    assert(season!=NULL);
+    assert(driver!=NULL && season!=NULL);
     driver->season_of_driver = season;
     driver->points=0;
 }
 
 DriverStatus DriverAddRaceResult(Driver driver, int position){
+    if(driver == NULL){
+        return INVALID_DRIVER;
+    }
     if (position<MIN_POSITION){
         return INVALID_POSITION;
     }
     if(driver->season_of_driver==NULL){
         return SEASON_NOT_ASSIGNED;
-    }
-    if(driver == NULL){
-        return INVALID_DRIVER;
     }
     driver->points+=(SeasonGetNumberOfDrivers(driver->season_of_driver)-position);
     return DRIVER_STATUS_OK;
