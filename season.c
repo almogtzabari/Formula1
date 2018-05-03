@@ -176,6 +176,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
             drivers_array[drivers_index++] = DriverCreate(&driver_creation_status,line,id++);
             DriverSetSeason(drivers_array[drivers_index-1],new_season); // Adding the driver to the season.
             DriverSetTeam(drivers_array[drivers_index-1],teams_array[teams_index-1]); // Adding the driver to the team.
+            TeamAddDriver(teams_array[teams_index-1],drivers_array[drivers_index-1]);
             if(driver_creation_status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 DriverAndTeamArrayDestroy(drivers_array,teams_array,
                                           new_season->number_of_drivers,new_season->number_of_teams);
@@ -317,7 +318,7 @@ static int FindCurrentWinningTeam (Season season, int* points, int number_of_tea
     int winning_team_index=0;
     DriverStatus status;
     int max_team_points=points[0];
-    for (int i=1;i<number_of_teams,i!=winning_team_index;i++) {
+    for (int i=1;i<number_of_teams;i++) {
                 if (points[i] > max_team_points) {
                     max_team_points = points[i];
                     winning_team_index = i;
