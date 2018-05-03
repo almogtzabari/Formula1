@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include "driver.h"
+#include <stdlib.h>
 
 
 
