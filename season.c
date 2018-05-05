@@ -34,7 +34,7 @@ static Driver* DriverArrayAllocation(Season season,
 static Team* TeamArrayAllocation(Season season,char* season_info_copy);
 static int* SeasonLastRaceResultsArrayAllocation(Season season,
                                                  char* season_info_copy);
-static void SetDriverSeasonResources(char* driver_name, Driver* drivers_array,
+static void SetDriversInSeason(char* driver_name, Driver* drivers_array,
                                      Team* team_array, int* id,DriverStatus* status, int* driver_index,
                                      int* team_index, Season season, char* season_info_copy);
 
@@ -225,7 +225,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
             }
         }
         else if(!DriverIsNone(line,"None")){  //Checks if the current line is a valid driver name.
-            SetDriverSeasonResources(line,drivers_array,teams_array,&id,
+            SetDriversInSeason(line,drivers_array,teams_array,&id,
                                      &driver_creation_status,&drivers_index, &teams_index,new_season,season_info_copy);
             if(driver_creation_status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 return NULL;
@@ -245,7 +245,21 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     return new_season;
 }
 
-static void SetDriverSeasonResources(char* driver_name, Driver* drivers_array,
+/**
+ ***** Function : SetDriversInSeason *****
+ * Creates drivers, putting them in drivers array, sets their season, adding
+ * them to their team and setting them to their team.
+ * @param driver_name - Driver's name.
+ * @param drivers_array - A pointer to drivers array.
+ * @param team_array - A pointer to teams array.
+ * @param id - Id of driver.
+ * @param status - Driver creation status.
+ * @param driver_index - Position in driver array.
+ * @param team_index - Position in team array.
+ * @param season - A pointer to season.
+ * @param season_info_copy - Copy of season info string.
+ */
+static void SetDriversInSeason(char* driver_name, Driver* drivers_array,
                                      Team* team_array, int* id,DriverStatus* status, int* driver_index,
                                      int* team_index, Season season, char* season_info_copy){
     drivers_array[(*driver_index)++] = DriverCreate
