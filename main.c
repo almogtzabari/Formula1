@@ -72,7 +72,7 @@ void TeamTesting(){
 
 /** Printing team details: name,points,drivers. */
 void TeamPrint(Team team, TeamStatus team_status){
-    DriverStatus driver_status;
+//    DriverStatus driver_status;
     printf("Team Name: %s\n",TeamGetName(team));
     int team_points = TeamGetPoints(team,&team_status);
     printf("Team Points: %d\n", team_points);
@@ -153,8 +153,8 @@ void DriverPrintCreateStatus(DriverStatus status){
 /***** Season testing functions *****/
 void SeasonTesting(){
     SeasonStatus season_status;
-    TeamStatus team_status;
-    DriverStatus status;
+//    TeamStatus team_status;
+//    DriverStatus status;
     char* string = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
     Season season = SeasonCreate(&season_status,string);
     int test_results [7] = {5,6,2,1,4,7,3};
