@@ -48,6 +48,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     driver->id=driverId;
     driver->driver_name=name;
     driver->season_of_driver = NULL;
+    driver->points = 0;
     *status=DRIVER_STATUS_OK;
     return driver;
 }
