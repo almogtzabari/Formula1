@@ -249,8 +249,8 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
 static void SetDriverSeasonResources(char* driver_name, Driver* drivers_array,
                                      Team* team_array, int* id,DriverStatus* status, int* driver_index,
                                      int* team_index, Season season, char* season_info_copy){
-    drivers_array[(*driver_index++)] = DriverCreate
-            (status,driver_name,(*id++));
+    drivers_array[(*driver_index)++] = DriverCreate
+            (status,driver_name,(*id)++);
     if(*status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
         DriverAndTeamArrayDestroy(drivers_array,team_array,
                                   season->number_of_drivers,season->number_of_teams);
