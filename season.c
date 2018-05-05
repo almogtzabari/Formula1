@@ -287,10 +287,15 @@ void SeasonDestroy(Season season) {
     DriverAndTeamArrayDestroy(season->drivers_array, season->team_array,
                               season->number_of_drivers,
                               season->number_of_teams);
-    free(season);
     free(season->last_race_results_array);
+    free(season);
 }
 
+/**
+ ***** Function: SeasonGetNumberOfDriver *****
+ * @param season
+ * @return
+ */
 int SeasonGetNumberOfDrivers(Season season){
     assert(season!=NULL);
     return season->number_of_drivers;
