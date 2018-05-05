@@ -41,7 +41,13 @@ struct season {
     int* last_race_results_array;
 };
 
-
+/**
+ ***** Function:SeasonAddResult****
+ * Adding race results to all drivers in the current season.
+ * @param season - A pointer to a season.
+ * @param results - An array with results of a race.
+ * @return Success/fail +reason of the function.
+ */
 SeasonStatus SeasonAddRaceResult(Season season, int* results){
     if (season==NULL || results==NULL){
         return SEASON_NULL_PTR;
@@ -52,7 +58,12 @@ SeasonStatus SeasonAddRaceResult(Season season, int* results){
     }
     return SEASON_OK;
 }
-
+/**
+ ***** Function: SeasonGetDriversStandings*****
+ * Sorts the drivers by their position according to the points gained till the function is called.
+ * @param season - a pointer to a season.
+ * @return Succses/fail + reason of the failure(if failed).
+ */
 Driver* SeasonGetDriversStandings(Season season){
     assert(season!=NULL);
     Driver* drivers_standings = malloc(sizeof(*drivers_standings)*season->number_of_drivers); // todo: where do we free array?
@@ -80,7 +91,16 @@ Driver* SeasonGetDriversStandings(Season season){
     free(drivers_points_array);
     return drivers_standings;
 }
+/**
+ ***** Function:DriversArrayToPointsArray *****
+ * Adding each driver's points to a given array.
+ * @param drivers_points - An array of points of drivers. driver_points[i] contaions points of driver i.
+ * @param drivers_array - A pointer to a driver array.
+ * @param number_of_drivers - Number of drivers.
+ */
 static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array, int number_of_drivers){
+    assert(drivers_array!=NULL);
+    assert(drivers_points!=NULL);
     DriverStatus status;
     int points_of_driver_i;
     for(int i=0;i<number_of_drivers;i++){
@@ -91,7 +111,19 @@ static void DriversArrayToPointsArray(int *drivers_points, Driver *drivers_array
         // todo: free memory in case of another status?
     }
 }
+
+/**
+ ***** Function:FindIndexOfMaxPointsDriver *****
+ * Finds the driver with the highest number of points. In case there are 2 drivers
+ * with equal number of points checks which driver got a better position in the last
+ * race and returns its index.
+ * @param season - A pointer to a season.
+ * @param points - A pointer to an array of dirvers points array.
+ * @param number_of_drivers - Number of drivers.
+ * @return Index of the driver with max points.
+ */
 static int FindIndexOfMaxPointsDriver(Season season, int* points, int number_of_drivers){
+    assert(season!=NULL && points!=NULL);
     int max = points[0];
     int index_of_max = 0;
     for(int i=1;i<number_of_drivers;i++){
@@ -108,7 +140,16 @@ static int FindIndexOfMaxPointsDriver(Season season, int* points, int number_of_
     points[index_of_max] = -1;
     return index_of_max;
 }
+
+/**
+ * Function: FindLastPositionById *****
+ * Finds the driver's position in the last race by his id.
+ * @param season - A pointer to a season.
+ * @param id
+ * @return
+ */
 static int FindLastPositionById(Season season, int id){
+    assert(season!=NULL);
     for(int i=0;i<season->number_of_drivers;i++){
         if(season->last_race_results_array[i] == id)
             return i+1;
@@ -118,6 +159,7 @@ static int FindLastPositionById(Season season, int id){
 
 /**
  ***** Function: SeasonCreate *****
+ * Creates a new season.
  * @param status - Will hold success/fail of the function.
  * @param season_info - String containing input of teams and drivers.
  * @return A pointer to the season.
