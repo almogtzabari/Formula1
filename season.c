@@ -226,8 +226,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         }
         else if(!DriverIsNone(line,"None")){  //Checks if the current line is a valid driver name.
             SetDriverSeasonResources(line,drivers_array,teams_array,&id,
-                                     &driver_creation_status,&drivers_index,
-                                     &teams_index,new_season,season_info_copy);
+                                     &driver_creation_status,&drivers_index, &teams_index,new_season,season_info_copy);
             if(driver_creation_status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 return NULL;
             }
