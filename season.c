@@ -10,8 +10,6 @@
 
 /** Declarations */
 static void DriversAndTeamsCounter(int* drivers, int* teams, const char* details,SeasonStatus* status);
-static void DriverAndTeamArrayDestroy (Driver* driver_array,
-                                       Team* team_array, int number_of_drivers, int number_of_teams);
 void SeasonDestroy(Season season);
 int SeasonGetNumberOfDrivers(Season season);
 static bool DriverIsNone(char* name, char* source );
@@ -200,7 +198,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         free(new_season);
         return NULL;
     }
-    Team* teams_array =TeamArrayAllocation(new_season,season_info_copy);
+    Team* teams_array = TeamArrayAllocation(new_season,season_info_copy);
     if (teams_array == NULL){ //If allocation fails frees all the allocated elements.
         return NULL;
     }
@@ -217,9 +215,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         if(line_number++%3 == 0){   //Checks if the current line is a team name.
             teams_array[teams_index++] = TeamCreate(&team_creation_status,line);
             if (team_creation_status == TEAM_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
-                DriverAndTeamArrayDestroy(drivers_array,teams_array,
-                                          new_season->number_of_drivers,new_season->number_of_teams);
-                free(new_season);
+                SeasonDestroy(new_season);
                 free(season_info_copy);
                 return NULL;
             }
@@ -238,8 +234,9 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     new_season->last_race_results_array =
             SeasonLastRaceResultsArrayAllocation(new_season,season_info_copy);
     if(new_season->last_race_results_array == NULL) {
-        DriverAndTeamArrayDestroy(drivers_array, teams_array,
-                                  new_season->number_of_drivers, new_season->number_of_teams);
+        SeasonDestroy(new_season);
+        free(season_info_copy);
+        return NULL;
     }
     free(season_info_copy);
     return new_season;
@@ -265,15 +262,14 @@ static void SetDriversInSeason(char* driver_name, Driver* drivers_array,
     drivers_array[(*driver_index)++] = DriverCreate
             (status,driver_name,(*id)++);
     if(*status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
-        DriverAndTeamArrayDestroy(drivers_array,team_array,
-                                  season->number_of_drivers,season->number_of_teams);
-        free(season);
+        SeasonDestroy(season);
         free(season_info_copy);
         return;
     }
     DriverSetSeason(drivers_array[(*driver_index)-1],season); // Adding the driver to the season.
-    DriverSetTeam(drivers_array[(*driver_index)-1],team_array[(*team_index)-1]); // Adding the driver to the team.
-    TeamAddDriver(team_array[(*team_index)-1],drivers_array[(*driver_index)-1]);
+    if(TeamAddDriver(team_array[(*team_index)-1],drivers_array[(*driver_index)-1]) == TEAM_STATUS_OK){ // Driver successfully added to team.
+        DriverSetTeam(drivers_array[(*driver_index)-1],team_array[(*team_index)-1]); // Setting driver team.
+    }
 }
 
 
@@ -311,24 +307,7 @@ static void DriversAndTeamsCounter(int* drivers, int* teams,
     *drivers = number_of_drivers;
     *teams = number_of_teams;
     free(season_details_copy);
-}
-
-/**
- ***** Function:DriverAndTeamArrayDestroy *****
- * Destroys all the allocated memory of all the drivers and all the teams.
- * @param driver_array - A pointer to drivers array.
- * @param team_array - A pointer to teams array.
- * @param number_of_drivers - Number of drivers.
- * @param number_of_teams - Number of teams.
- */
-static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
-                                       int number_of_drivers, int number_of_teams) {
-    assert(driver_array!=NULL && team_array!=NULL);
-    for (int j = 0; j < number_of_teams; j++) {
-        TeamDestroy(team_array[j]);
-    }
-    free(driver_array);
-    free(team_array);
+    *status = SEASON_OK;
 }
 
 /**
@@ -339,8 +318,12 @@ static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
  * @param season - A pointer to a season.
  */
 void SeasonDestroy(Season season) {
-    DriverAndTeamArrayDestroy(season->drivers_array, season->team_array,
-                              season->number_of_drivers,season->number_of_teams);
+    assert(season!=NULL);
+    for (int j = 0; j < season->number_of_teams; j++) {
+        TeamDestroy((season->team_array)[j]);
+    }
+    free(season->drivers_array);
+    free(season->team_array);
     free(season->last_race_results_array);
     free(season);
 }

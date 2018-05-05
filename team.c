@@ -62,15 +62,11 @@ Team TeamCreate(TeamStatus* status, char* name){
  */
 void TeamDestroy(Team team){
     if(team!=NULL) {
-        if(team->first_driver!=NULL){
-            DriverDestroy(team->first_driver);
-        }
-        if(team->second_driver!=NULL){
-            DriverDestroy(team->second_driver);
-        }
-        free(team->name);
-        free(team);
+        DriverDestroy(team->first_driver);
+        DriverDestroy(team->second_driver);
     }
+    free(team->name);
+    free(team);
 }
 
 /** Tested: Yes
