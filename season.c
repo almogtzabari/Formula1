@@ -394,7 +394,7 @@ Team* SeasonGetTeamsStandings(Season season){
  * @return Winning team index.
  */
 static int FindCurrentWinningTeam (Season season, int* points, int number_of_teams){
-    assert(season!=NULL ** points!=NULL);
+    assert(season!=NULL && points!=NULL);
     int winning_team_index=0;
     int max_team_points=points[0];
     for (int i=1;i<number_of_teams;i++) {
