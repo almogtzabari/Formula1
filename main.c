@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include "team.h"
 #include "season.h"
@@ -30,8 +31,8 @@ int main() {
 //    printf("------------------------------------------------------------");
 //    DriverTesting();
 //    printf("------------------------------------------------------------");
-//    SeasonTesting();
-     Test();
+    SeasonTesting();
+//    Test();
     return 0;
 }
 
@@ -153,13 +154,19 @@ void DriverPrintCreateStatus(DriverStatus status){
 /***** Season testing functions *****/
 void SeasonTesting(){
     SeasonStatus season_status;
-//    TeamStatus team_status;
+    TeamStatus team_status;
 //    DriverStatus status;
     char* string = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
     Season season = SeasonCreate(&season_status,string);
-    int test_results [7] = {5,6,2,1,4,7,3};
+    int test_results [7] = {1,2,3,4,5,6,7};
     SeasonAddRaceResult(season,test_results);
+    int test_results2 [7] = {3,4,1,2,5,6,7};
+    Team winner = SeasonGetTeamByPosition(season,1,&season_status);
+    printf("The winning team is:\n");
+    TeamPrint(winner,team_status);
+    SeasonAddRaceResult(season,test_results2);
     SeasonPrint(season);
+    SeasonDestroy(season);
 }
 
 void SeasonPrint(Season season){
