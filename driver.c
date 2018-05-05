@@ -40,7 +40,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
         free(name);
         return NULL;
     }
-    if(driverId<0){
+    if(driverId<=0){
         *status=DRIVER_MEMORY_ERROR;
         free(name);
         return NULL;
@@ -107,8 +107,10 @@ int DriverGetId(Driver driver){
  * @param driver - A pointer to a driver.
  */
 void DriverDestroy(Driver driver){
-    free(driver->driver_name);
-    free(driver);
+    if(driver!=NULL){
+        free(driver->driver_name);
+        free(driver);
+    }
 }
 /**
  ***** Function: DriverSetSeason *****
