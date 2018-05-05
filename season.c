@@ -236,6 +236,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
 
 /**
  ***** Function: DriversAndTeamsCounter *****
+ * Counts the number of drivers and teams in the given string.
  * @param drivers - Will hold the number of drivers.
  * @param teams - Will hold the number of teams.
  * @param details - String input that contains the teams and drivers.
@@ -268,8 +269,17 @@ static void DriversAndTeamsCounter(int* drivers, int* teams,
     free(season_details_copy);
 }
 
+/**
+ ***** Function:DriverAndTeamArrayDestroy *****
+ * Destroys all the allocated memory of all the drivers and all the teams.
+ * @param driver_array - A pointer to drivers array.
+ * @param team_array - A pointer to teams array.
+ * @param number_of_drivers - Number of drivers.
+ * @param number_of_teams - Number of teams.
+ */
 static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
                                        int number_of_drivers, int number_of_teams) {
+    assert(driver_array!=NULL && team_array!=NULL);
     for (int j = 0; j < number_of_teams; j++) {
         TeamDestroy(team_array[j]);
     }
@@ -279,6 +289,7 @@ static void DriverAndTeamArrayDestroy (Driver* driver_array, Team* team_array,
 
 /**
  ***** Function: SeasonDestroy *****
+ * Destroys all allocated memory of a season.
  * Description: freeing all allocated memory of season including all the
  * elements in array: drivers, teams and their pointers.
  * @param season - A pointer to a season.
@@ -293,7 +304,8 @@ void SeasonDestroy(Season season) {
 
 /**
  ***** Function: SeasonGetNumberOfDriver *****
- * @param season
+ * Gets the number of drivers in a given season.
+ * @param season - A pointer to a season.
  * @return
  */
 int SeasonGetNumberOfDrivers(Season season){
@@ -301,7 +313,15 @@ int SeasonGetNumberOfDrivers(Season season){
     return season->number_of_drivers;
 }
 
+/**
+ ***** Function : DriverIsNone *****
+ * Checks if a new driver should be created.
+ * @param name - A pointer to a driver's name.
+ * @param source - A pointer to the string "None".
+ * @return true if the driver's name is None else return false.
+ */
 static bool DriverIsNone(char* name, char* source ){
+    assert(name!=NULL && source!=NULL);
     while (*name || *source){
         if (*name==*source){
             name++;
@@ -314,11 +334,23 @@ static bool DriverIsNone(char* name, char* source ){
     return true;
 }
 
+/**
+ ***** Function: SeasonGetNumberOfTeams *****
+ * Gets the number of teams in the current season.
+ * @param season - a pointer to a season.
+ * @return number of teams of the season.
+ */
 int SeasonGetNumberOfTeams(Season season){
     assert(season!=NULL);
     return season->number_of_teams;
 }
 
+/**
+ ***** Function : SeasonGetTeamStandings *****
+ * Sorting the teams in the season by their points.
+ * @param season - A pointer to a season.
+ * @return a pointer to a sorted team array.
+ */
 Team* SeasonGetTeamsStandings(Season season){
     assert(season!=NULL);
     TeamStatus status;
@@ -351,7 +383,18 @@ Team* SeasonGetTeamsStandings(Season season){
     return sorted_team_array;
 }
 
+/**
+ ***** Function : FindCurrentWinningTeam *****
+ * Finds the index of the team with the highest points. If two teams has equal number
+ * of points checks which of the team's driver's position was highest and returns the
+ * index of this team.
+ * @param season - A pointer to a season.
+ * @param points - A pointer to an array which contains the teams points.
+ * @param number_of_teams - Number of teams in the season.
+ * @return Winning team index.
+ */
 static int FindCurrentWinningTeam (Season season, int* points, int number_of_teams){
+    assert(season!=NULL ** points!=NULL);
     int winning_team_index=0;
     int max_team_points=points[0];
     for (int i=1;i<number_of_teams;i++) {
@@ -370,7 +413,15 @@ static int FindCurrentWinningTeam (Season season, int* points, int number_of_tea
     return winning_team_index;
 }
 
+/**
+ ***** Function: FindBestTeamDriverPosition *****
+ * Checks which of each team's drivers has the best position.
+ * @param season - A pointer to a season.
+ * @param team - A pointer to a team.
+ * @return the position of the best team's driver.
+ */
 static int FindBestTeamDriverPosition (Season season,Team team){
+    assert(season!=NULL && team!=NULL);
     int first_driver_position,second_driver_position;
     first_driver_position=(FindLastPositionById(season,DriverGetId(TeamGetDriver(team,FIRST_DRIVER))));
     second_driver_position=(FindLastPositionById(season,DriverGetId(TeamGetDriver(team,SECOND_DRIVER))));
@@ -380,7 +431,16 @@ static int FindBestTeamDriverPosition (Season season,Team team){
     return second_driver_position;
 }
 
+/**
+ ***** Function : SeasonGetTeamByPosition *****
+ * Returns a team pointer by it's rank.
+ * @param season - a pointer to a season.
+ * @param position - a position in the sorted teams array.
+ * @param status - will hold success or failure.
+ * @return a pointer to a team by its position in the sorted team array.
+ */
 Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
+    assert(season!=NULL && status!=NULL);
     if(position<1 || position>season->number_of_teams){
         *status=SEASON_NULL_PTR; //Check if legal, because its not supposed to be null ptr
         return NULL;
@@ -389,7 +449,16 @@ Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
     return sorted_team_array[position-1];
 }
 
+/**
+ ***** Function : SeasonGetDriverByPosition *****
+ * Returns a drivers pointer by it's rank.
+ * @param season - a pointer to season.
+ * @param position - a position in the sorted drivers array.
+ * @param status - will hold success or failure.
+ * @return a pointer to a driver by its position in the sorted drivers array.
+ */
 Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status){
+    assert(season!=NULL && status!=NULL);
     if(position<1 || position>season->number_of_drivers){
         *status=SEASON_NULL_PTR; //Check if legal, because its not supposed to be null ptr
         return NULL;
@@ -397,8 +466,17 @@ Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* stat
     Driver* sorted_driver_array=SeasonGetDriversStandings(season);
     return sorted_driver_array[position-1];
 }
-
+/**
+ ***** Function : DriverArrayAllocation *****
+ * Allocates memory for the drivers array according to the number of drivers
+ * and sets it to NULL.
+ * @param season - A pointer to a season.
+ * @param season_info_copy - A pointer to the season's info copy string.
+ * @param teams_array - A pointer to the array of the teams in the current season.
+ * @return a pointer to the allocated drivers array or NULL in case of memory allocation error.
+ */
 static Driver* DriverArrayAllocation(Season season,char* season_info_copy ,Team* teams_array){
+    assert(season!=NULL && season_info_copy!=NULL && teams_array!=NULL);
     Driver* drivers_array = malloc(sizeof(*drivers_array)*season->number_of_drivers);
     if (drivers_array == NULL){    //If allocation fails frees all the allocated elements.
         free(season);
@@ -411,7 +489,17 @@ static Driver* DriverArrayAllocation(Season season,char* season_info_copy ,Team*
     }
     return drivers_array;
 }
+
+/**
+ ***** Function: TeamArrayAllocation *****
+ * Allocates memory to the teams array according to the number of teams in the season,
+ * and sets it to NULL.
+ * @param season - a pointer to a season.
+ * @param season_info_copy - A pointer to the season's info copy string.
+ * @return a pointer to the allocated teams array or NULL in case of memory allocation error.
+ */
 static Team* TeamArrayAllocation(Season season,char* season_info_copy) {
+    assert(season!=NULL && season_info_copy!=NULL);
     Team *teams_array = malloc(sizeof(*teams_array)*(season->number_of_teams));
     if (teams_array == NULL) {
         free(season);
@@ -423,7 +511,16 @@ static Team* TeamArrayAllocation(Season season,char* season_info_copy) {
     return teams_array;
 }
 
+/**
+ ***** Function : SeasonLastRaceResultsArrayAllocation *****
+ * Allocates memory according to the number of drivers in the season which will
+ * contain the last race results.
+ * @param season - A pointer to a season.
+ * @param season_info_copy - A pointer to the season's info copy string.
+ * @return a pointer to the allocated results array or NULL in case of memory allocation error.
+ */
 static int* SeasonLastRaceResultsArrayAllocation(Season season,char* season_info_copy){
+    assert(season!=NULL && season_info_copy!=NULL);
     int* last_race_results_array = malloc(sizeof(*last_race_results_array)*season->number_of_drivers);
     if(last_race_results_array == NULL) {
         free(season_info_copy);
