@@ -9,24 +9,17 @@
 
 
 /** Declarations */
-static void DriversAndTeamsCounter(int* drivers, int* teams, const char* details,SeasonStatus* status);
-void SeasonDestroy(Season season);
-int SeasonGetNumberOfDrivers(Season season);
+static void DriversAndTeamsCounter(int* drivers, int* teams,
+                                   const char* details,SeasonStatus* status);
 static bool DriverIsNone(char* name, char* source );
-SeasonStatus SeasonAddRaceResult(Season season, int* results);
-Driver* SeasonGetDriversStandings(Season season);
 static void DriversArrayToPointsArray(int *drivers_points,
                                       Driver *drivers_array, int number_of_drivers);
-static int FindIndexOfMaxPointsDriver(Season season, int* points, int number_of_drivers);
+static int FindIndexOfMaxPointsDriver(Season season,
+                                      int* points, int number_of_drivers);
 static int FindLastPositionById(Season season, int id);
-Team* SeasonGetTeamsStandings(Season season);
 static int FindCurrentWinningTeam (Season season, int* points,
                                    int number_of_teams);
 static int FindBestTeamDriverPosition (Season season,Team team);
-Team SeasonGetTeamByPosition(Season season, int position,
-                             SeasonStatus* status);
-Driver SeasonGetDriverByPosition(Season season, int position,
-                                 SeasonStatus* status);
 static Driver* DriverArrayAllocation(Season season,Team* teams_array);
 static Team* TeamArrayAllocation(Season season);
 static int* SeasonLastRaceResultsArrayAllocation(Season season);
@@ -218,7 +211,8 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         }
         return NULL;
     }
-    SeasonDriversAndTeamsCreation(season_info,&season_allocation_status,new_season);
+    SeasonDriversAndTeamsCreation(season_info,
+                                  &season_allocation_status,new_season);
             if(season_allocation_status==SEASON_MEMORY_ERROR){
                 return NULL;
     }
@@ -233,8 +227,16 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     }
     return new_season;
 }
-
-static void SeasonDriversAndTeamsCreation (const char* season_info, SeasonStatus* status,Season season){
+/**
+ ***** Function : SeasonDriversAndTeamsCreation *****
+ * Assings the year to a season and creates drivers and teams
+ * and assigns them to teams and drivers array.
+ * @param season_info - A pointer to a string which contains season info.
+ * @param status - Status of the function which holds success or failure.
+ * @param season - A pointer to a season.
+ */
+static void SeasonDriversAndTeamsCreation (const char* season_info,
+                                           SeasonStatus* status,Season season){
     int drivers_index=0, teams_index=0, id=1, line_number=0;
     TeamStatus team_creation_status;
     DriverStatus driver_creation_status;
@@ -252,7 +254,8 @@ static void SeasonDriversAndTeamsCreation (const char* season_info, SeasonStatus
     line = strtok(NULL,"\n");
     while(line != NULL){
         if(line_number++%3 == 0){   //Checks if the current line is a team name.
-            season->team_array[teams_index++] = TeamCreate(&team_creation_status,line);
+            season->team_array[teams_index++] =
+                    TeamCreate(&team_creation_status,line);
             if (team_creation_status == TEAM_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 SeasonDestroy(season);
                 free(season_info_copy);
@@ -261,7 +264,7 @@ static void SeasonDriversAndTeamsCreation (const char* season_info, SeasonStatus
         }
         else if(!DriverIsNone(line,"None")){  //Checks if the current line is a valid driver name.
             SetDriversInSeason(line,season->drivers_array,season->team_array,
-                               &id,&driver_creation_status,&drivers_index, &teams_index,season,
+                               &id,&driver_creation_status,&drivers_index,&teams_index,season,
                                season_info_copy);
             if(driver_creation_status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
                 return;
@@ -297,8 +300,10 @@ static void SetDriversInSeason(char* driver_name, Driver* drivers_array,
         return;
     }
     DriverSetSeason(drivers_array[(*driver_index)-1],season); // Adding the driver to the season.
-    if(TeamAddDriver(team_array[(*team_index)-1],drivers_array[(*driver_index)-1]) == TEAM_STATUS_OK){ // Driver successfully added to team.
-        DriverSetTeam(drivers_array[(*driver_index)-1],team_array[(*team_index)-1]); // Setting driver team.
+    if(TeamAddDriver(team_array[(*team_index)-1],
+                     drivers_array[(*driver_index)-1]) == TEAM_STATUS_OK){ // Driver successfully added to team.
+        DriverSetTeam(drivers_array[(*driver_index)-1],
+                      team_array[(*team_index)-1]); // Setting driver team.
     }
 }
 
@@ -444,7 +449,8 @@ Team* SeasonGetTeamsStandings(Season season){
     for (int j=0;j<season->number_of_teams;j++) {
         index_of_current_winning_team=FindCurrentWinningTeam(
                 season,team_points_array,season->number_of_teams);
-        sorted_team_array[j]=season->team_array[index_of_current_winning_team];
+        sorted_team_array[j]=
+                season->team_array[index_of_current_winning_team];
     }
     free(team_points_array);
     return sorted_team_array;
@@ -472,7 +478,8 @@ static int FindCurrentWinningTeam
         }
         else if (points[i] == max_team_points) {
             if (FindBestTeamDriverPosition(season,season->team_array[i]) <
-                FindBestTeamDriverPosition(season,season->team_array[winning_team_index])) {
+                FindBestTeamDriverPosition
+                        (season,season->team_array[winning_team_index])) {
                 winning_team_index = i;
             }
         }
@@ -492,9 +499,11 @@ static int FindBestTeamDriverPosition (Season season,Team team){
     assert(season!=NULL && team!=NULL);
     int first_driver_position,second_driver_position;
     first_driver_position=
-            (FindLastPositionById(season,DriverGetId(TeamGetDriver(team,FIRST_DRIVER))));
+            (FindLastPositionById(season,DriverGetId
+                    (TeamGetDriver(team,FIRST_DRIVER))));
     second_driver_position=
-            (FindLastPositionById(season,DriverGetId(TeamGetDriver(team,SECOND_DRIVER))));
+            (FindLastPositionById(season,DriverGetId(
+                    TeamGetDriver(team,SECOND_DRIVER))));
     if(first_driver_position<second_driver_position){
         return first_driver_position;
     }
@@ -509,7 +518,8 @@ static int FindBestTeamDriverPosition (Season season,Team team){
  * @param status - will hold success or failure.
  * @return a pointer to a team by its position in the sorted team array.
  */
-Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
+Team SeasonGetTeamByPosition(Season season, int position,
+                             SeasonStatus* status){
     if (season==NULL){
         if(status!=NULL){
             *status=SEASON_NULL_PTR;
@@ -545,7 +555,8 @@ Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
  * @param status - will hold success or failure.
  * @return a pointer to a driver by its position in the sorted drivers array.
  */
-Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* status){
+Driver SeasonGetDriverByPosition(Season season, int position,
+                                 SeasonStatus* status){
     if (season==NULL){
         if(status!=NULL){
             *status=SEASON_NULL_PTR;
@@ -603,7 +614,8 @@ static Driver* DriverArrayAllocation(Season season ,Team* teams_array){
  */
 static Team* TeamArrayAllocation(Season season) {
     assert(season!=NULL);
-    Team *teams_array = malloc(sizeof(*teams_array)*(season->number_of_teams));
+    Team *teams_array =
+            malloc(sizeof(*teams_array)*(season->number_of_teams));
     if (teams_array == NULL) {
         free(season);
     }

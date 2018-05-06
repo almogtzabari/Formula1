@@ -23,18 +23,18 @@ struct driver {
  * Creates a new driver.
  * @param status - will hold success or fail of the function.
  * @param driver_name - A string which contains the driver's name.
- * @param driverId - Driver id.
- * @return returns NULL in case of failure or pointer to the created driver in case of success.
+ * @param driverId - A given id.
+ * @return return - NULL in case of failure or pointer to the created driver in case of success.
  */
 Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
-    if (driver_name==NULL){
-        if (status!=NULL){
+    if (driver_name==NULL){ // Checks if the given string is NULL.
+        if (status!=NULL){ // Checks if status is NULL.
             *status=INVALID_DRIVER;
         }
         return NULL;
     }
     char* name = malloc(strlen(driver_name)+1);
-    if (name==NULL){
+    if (name==NULL){  // Checks if allocation failed.
         if (status!=NULL){
             *status=DRIVER_MEMORY_ERROR;
         }
@@ -49,7 +49,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
         free(name);
         return NULL;
     }
-    if(driverId<=0){ // Invalid ID
+    if(driverId<=0){ // Checks if id is vaild.
         if (status!=NULL){
             *status=INVALID_DRIVER;
         }
@@ -57,10 +57,11 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
         free(name);
         return NULL;
     }
-    driver->id=driverId;
+    // If we got here we can create a driver.
+    driver->id=driverId;  // Sets driver's id.
     driver->driver_name=name;
     driver->season_of_driver = NULL;
-    driver->points = 0;
+    driver->points = 0; // Resets driver's points to 0.
     driver->team = NULL;
     if (status!=NULL){
         *status=DRIVER_STATUS_OK;
@@ -70,24 +71,24 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
 /**
  ***** Function : DriverSetTeam *****
  * Sets given team to a given driver.
- * @param driver A pointer to a driver.
- * @param team A pointer to a team.
+ * @param driver - A pointer to a driver.
+ * @param team - A pointer to a team.
  */
 void DriverSetTeam(Driver driver, Team team){
-    if (driver==NULL){
+    if (driver==NULL){ //Checks if driver is not NULL.
         return;
     }
     driver->team=team;
 }
 
-/** Tested: Yes
+/**
  ***** Function: DriverGetName *****
  * Gets a driver name.
  * @param driver - A pointer to a driver.
- * @return Name of the driver.
+ * @return A pointer to a string contains the name of the driver.
  */
 const char* DriverGetName(Driver driver){
-    if (driver==NULL){
+    if (driver==NULL){ //Checks if driver is not NULL.
         return NULL;
     }
     return driver->driver_name;
@@ -97,23 +98,23 @@ const char* DriverGetName(Driver driver){
  ***** Function: DriverGetTeam *****
  * Gets the driver's team pointer.
  * @param driver - A pointer to a driver.
- * @return A pointer to a team if driver is not a NULL pointer.
+ * @return - A pointer to a team if driver is not a NULL pointer.
  */
 Team DriverGetTeam(Driver driver){
-    if(driver==NULL){
+    if(driver==NULL){ //Checks if driver is not NULL.
         return NULL;
     }
     return driver->team;
 }
 
-/** Tested: Yes
+/**
  ***** Function: DriverGetId *****
  * Gets the given driver's id.
  * @param driver - A pointer to a driver.
- * @return ID of the driver.
+ * @return - ID of the driver.
  */
 int DriverGetId(Driver driver){
-    if (driver==NULL){
+    if (driver==NULL){ //Checks if driver is not NULL.
         return 0;
     }
     return driver->id;
@@ -121,11 +122,11 @@ int DriverGetId(Driver driver){
 
 /**
  ***** Function: DriverDestroy *****
- * Destroys the allocated memory of all resources of a given driver.
+ * Destroys all allocated memory of a given driver.
  * @param driver - A pointer to a driver.
  */
 void DriverDestroy(Driver driver){
-    if(driver!=NULL){
+    if(driver!=NULL){ // If driver is not NULL we need to free all of it's resources.
         free(driver->driver_name);
         free(driver);
     }
@@ -137,8 +138,8 @@ void DriverDestroy(Driver driver){
  * @param season - A pointer to a season.
  */
 void DriverSetSeason(Driver driver, Season season){
-    if (driver!=NULL && season!=NULL){
-    driver->season_of_driver = season;
+    if (driver!=NULL && season!=NULL){ // If driver and season is not NULL we can set driver's season and
+    driver->season_of_driver = season; // reset it's points.
     driver->points=0;
     }
 }
@@ -148,33 +149,35 @@ void DriverSetSeason(Driver driver, Season season){
  * Adds points to a driver by it's position.
  * @param driver - A pointer to a driver.
  * @param position - The driver's position in the last race.
- * @return Success/Failure of the function.
+ * @return - Success/Failure of the function.
  */
 DriverStatus DriverAddRaceResult(Driver driver, int position) {
-    if (driver == NULL) {
+    if (driver == NULL) { //Checks if driver is not NULL.
         return INVALID_DRIVER;
     }
-    if (driver->season_of_driver == NULL) {
+    if (driver->season_of_driver == NULL) { // Checks if season is not NULL.
         return SEASON_NOT_ASSIGNED;
     }
+    // Checks if the given position is not a negative number or bigger than the number of drivers.
     if (position < MIN_POSITION ||
         position > SeasonGetNumberOfDrivers(DriverGetSeason(driver))) {
         return INVALID_POSITION;
     }
+    //Adds points to a driver by it's position.
     driver->points+=(SeasonGetNumberOfDrivers(driver->season_of_driver)-position);
     return DRIVER_STATUS_OK;
 }
 
-/** Tested: Yes
+/**
  ***** Function: DriverGetPoints *****
  * Gets a driver's points.
  * @param driver - A pointer to a driver.
  * @param status - Will hold the success/fail of the function.
- * @return number of points of 'driver'.
+ * @return - number of points of a given driver.
  */
 int DriverGetPoints(Driver driver, DriverStatus* status){
-    if (driver==NULL){
-        if (status!=NULL) {
+    if (driver==NULL){ //Checks if driver is not NULL.
+        if (status!=NULL) { // Checks if status is not NULL.
             *status = INVALID_DRIVER;
         }
         return 0;
@@ -184,6 +187,13 @@ int DriverGetPoints(Driver driver, DriverStatus* status){
     }
     return driver->points;
 }
+/** Static functions */
+/**
+ *****  Function: DriverGetSeason *****
+ * @param driver - A pointer to a driver.
+ * @return - the season of the driver.
+ */
 static Season DriverGetSeason(Driver driver){
     return driver->season_of_driver;
 }
+/** End of static functions */
