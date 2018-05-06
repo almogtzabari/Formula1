@@ -189,7 +189,7 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
     int drivers_index=0, teams_index=0, id=1, line_number=0;
     TeamStatus team_creation_status;
     DriverStatus driver_creation_status;
-    SeasonStatus season_creation_status;
+    SeasonStatus season_allocation_status;
     Season new_season = malloc(sizeof(*new_season));
     if(new_season == NULL){
         if(status!=NULL) {
@@ -198,8 +198,11 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         return NULL;
     }
     DriversAndTeamsCounter(&new_season->number_of_drivers,
-                           &new_season->number_of_teams,season_info,&season_creation_status);
-    if ((season_creation_status==SEASON_MEMORY_ERROR )){
+                           &new_season->number_of_teams,season_info,&season_allocation_status);
+    if ((season_allocation_status==SEASON_MEMORY_ERROR )){
+        if (status!=NULL){
+            *status=season_allocation_status;
+        }
         free(new_season);
         return NULL;
     }
