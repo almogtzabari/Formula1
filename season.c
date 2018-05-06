@@ -526,7 +526,15 @@ Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
     if(status!=NULL){
         *status=SEASON_OK;
     }
-    return sorted_team_array[position-1];
+    Team team=sorted_team_array[position-1];
+    for (int i=0;i<season->number_of_teams;i++) {
+        if(!strcmp(TeamGetName(team),TeamGetName(season->team_array[i]))){
+            team=season->team_array[i];
+            free(sorted_team_array);
+            return team;
+        }
+    }
+    return NULL; // Shouldn't get here.
 }
 
 /**
