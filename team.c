@@ -16,7 +16,7 @@ struct team{
 
 /**
  ***** TeamCreate *****
- * Description: The function gets a string team's name and creates a new
+ * Description: the function gets a string team's name and creates a new
  * team. If the create was a success a pointer to the team is returned,
  * else NULL.
  * @param status - Success/failure of the function (if fails - with cause).
@@ -60,7 +60,7 @@ Team TeamCreate(TeamStatus* status, char* name){
 
 /**
  ***** Function: TeamDestroy *****
- * Description: Freeing all allocated memory of 'team' including
+ * Description: freeing all allocated memory of 'team' including
  * its drivers.
  * @param team - Pointer to a 'team'.
  */
@@ -75,7 +75,7 @@ void TeamDestroy(Team team){
 
 /**
  ***** Function: TeamAddDriver *****
- * Description: Adds 'driver' to 'team' if the team isn't full.
+ * Description: adds 'driver' to 'team' if the team isn't full.
  * @param team - Pointer to a 'team'.
  * @param driver - Pointer to a 'driver'
  * @return Status - Success/failure of the function (if fails - with cause).
@@ -97,7 +97,7 @@ TeamStatus TeamAddDriver(Team team, Driver driver){
 
 /**
  ***** Function: TeamGetName *****
- * Description: The function gets a pointer to a team and returns the name
+ * Description: the function gets a pointer to a team and returns the name
  * of the team. if the pointer is null then the function returns null.
  * @param team - Pointer to the 'team'.
  * @return Name (char*) of the 'team'.
@@ -111,7 +111,7 @@ const char * TeamGetName(Team team){
 
 /**
 ***** Function: TeamGetDriver *****
- * Description: The function gets a pointer to a team and a number of
+ * Description: the function gets a pointer to a team and a number of
  * driver and returns a pointer to that driver in the team. If the pointer
  * to the team is null or the number is not valid (enum - FIRST_DRIVER or
  * SECOND_DRIVER) then the function returns null.
@@ -132,7 +132,7 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
 
 /**
  ***** Function: TeamGetPoints *****
- * Description: The function gets a pointer to a team and a pointer of
+ * Description: the function gets a pointer to a team and a pointer of
  * status and returns the number of points of that team. If the pointer to
  * the team or the pointer to the status is null then the function returns
  * null and updating the status to 'TEAM_NULL_PTR'. If everything is okay
@@ -172,7 +172,7 @@ int TeamGetPoints(Team team, TeamStatus *status){
 /** Static functions */
 /**
  ***** Static Function: DriverNumberIsValid *****
- * Description: Checks if driver's number is FIRST_DRIVER or
+ * Description: checks if driver's number is FIRST_DRIVER or
  * SECOND_DRIVER (enum).
  * @param driver_number - (enum) number of driver.
  * @return 1 if the number is valid, else 0.

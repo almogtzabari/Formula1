@@ -71,7 +71,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
 
 /**
  ***** Function : DriverSetTeam *****
- * Description: Sets given team to a given driver.
+ * Description: assign the given team to the given driver.
  * @param driver - A pointer to a driver.
  * @param team - A pointer to a team.
  */
@@ -84,7 +84,7 @@ void DriverSetTeam(Driver driver, Team team){
 
 /**
  ***** Function: DriverGetName *****
- * Description: Gets a driver name.
+ * Description: gets a driver name.
  * @param driver - A pointer to a driver.
  * @return A pointer to a string contains the name of the driver.
  */
@@ -123,7 +123,7 @@ int DriverGetId(Driver driver){
 
 /**
  ***** Function: DriverDestroy *****
- * Description: Destroys all allocated memory of 'driver'.
+ * Description: destroys all allocated memory of 'driver'.
  * @param driver - A pointer to a driver.
  */
 void DriverDestroy(Driver driver){
@@ -135,7 +135,7 @@ void DriverDestroy(Driver driver){
 
 /**
  ***** Function: DriverSetSeason *****
- * Description: Assign the given season to the given driver.
+ * Description: assign the given season to the given driver.
  * @param driver - A pointer to a driver.
  * @param season - A pointer to a season.
  */
@@ -148,7 +148,7 @@ void DriverSetSeason(Driver driver, Season season){
 
 /**
  ***** Function: DriverAddRaceResult *****
- * Description: Adds points to a driver by it's position.
+ * Description: adds points to a driver by it's position.
  * @param driver - A pointer to a driver.
  * @param position - The driver's position in the last race.
  * @return - Success/failure of the function (if fails - with cause).
@@ -173,7 +173,7 @@ DriverStatus DriverAddRaceResult(Driver driver, int position){
 
 /**
  ***** Function: DriverGetPoints *****
- * Description: Gets driver's points.
+ * Description: gets driver's points.
  * @param driver - A pointer to a driver.
  * @param status - Success/failure of the function (if fails - with cause).
  * @return - number of points of a given driver.
