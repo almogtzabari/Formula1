@@ -27,21 +27,26 @@ struct driver {
  * @return returns NULL in case of failure or pointer to the created driver in case of success.
  */
 Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
-    assert(status!=NULL && driver_name!=NULL);
     char* name = malloc(strlen(driver_name)+1);
     if (name==NULL){
-        *status=DRIVER_MEMORY_ERROR;
+        if (status!=NULL){
+            *status=DRIVER_MEMORY_ERROR;
+        }
         return NULL;
     }
     strcpy(name,driver_name);
     Driver driver = malloc(sizeof(*driver));
     if (driver==NULL){
-        *status=DRIVER_MEMORY_ERROR;
+        if (status!=NULL){
+            *status=DRIVER_MEMORY_ERROR;
+        }
         free(name);
         return NULL;
     }
     if(driverId<=0){
-        *status=DRIVER_MEMORY_ERROR;
+        if (status!=NULL){
+            *status=DRIVER_MEMORY_ERROR;
+        }
         free(name);
         return NULL;
     }
@@ -49,7 +54,9 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     driver->driver_name=name;
     driver->season_of_driver = NULL;
     driver->points = 0;
-    *status=DRIVER_STATUS_OK;
+    if (status!=NULL){
+        *status=DRIVER_STATUS_OK;
+    }
     return driver;
 }
 /**
@@ -59,7 +66,9 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
  * @param team A pointer to a team.
  */
 void DriverSetTeam(Driver driver, Team team){
-    assert(driver!=NULL && team!=NULL);
+    if (driver==NULL || team==NULL){
+        return;
+    }
     driver->team=team;
 }
 
@@ -120,9 +129,10 @@ void DriverDestroy(Driver driver){
  * @param season - A pointer to a season.
  */
 void DriverSetSeason(Driver driver, Season season){
-    assert(driver!=NULL && season!=NULL);
+    if (driver!=NULL && season!=NULL){
     driver->season_of_driver = season;
     driver->points=0;
+    }
 }
 
 /**
@@ -154,11 +164,14 @@ DriverStatus DriverAddRaceResult(Driver driver, int position){
  * @return number of points of 'driver'.
  */
 int DriverGetPoints(Driver driver, DriverStatus* status){
-    assert(status!=NULL);
     if (driver==NULL){
-        *status=INVALID_DRIVER;
+        if (status!=NULL) {
+            *status = INVALID_DRIVER;
+        }
         return 0;
     }
-    *status=DRIVER_STATUS_OK;
+    if (status!=NULL) {
+        *status = DRIVER_STATUS_OK;
+    }
     return driver->points;
 }

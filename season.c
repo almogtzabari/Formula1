@@ -73,7 +73,9 @@ SeasonStatus SeasonAddRaceResult(Season season, int* results){
  * @return Succses/fail + reason of the failure(if failed).
  */
 Driver* SeasonGetDriversStandings(Season season){
-    assert(season!=NULL);
+    if (season==NULL){
+        return NULL;
+    }
     Driver* drivers_standings =
             malloc(sizeof(*drivers_standings)*season->number_of_drivers);
     if(drivers_standings == NULL){
@@ -178,33 +180,50 @@ static int FindLastPositionById(Season season, int id){
  * @return A pointer to the season.
  */
 Season SeasonCreate (SeasonStatus* status,const char* season_info){
+    if (season_info==NULL){
+        if(status!=NULL){
+            *status=SEASON_NULL_PTR;
+        }
+        return NULL;
+    }
     int drivers_index=0, teams_index=0, id=1, line_number=0;
     TeamStatus team_creation_status;
     DriverStatus driver_creation_status;
+    SeasonStatus season_creation_status;
     Season new_season = malloc(sizeof(*new_season));
     if(new_season == NULL){
-        *status = SEASON_MEMORY_ERROR;
+        if(status!=NULL) {
+            *status = SEASON_MEMORY_ERROR;
+        }
         return NULL;
     }
     DriversAndTeamsCounter(&new_season->number_of_drivers,
-                           &new_season->number_of_teams,season_info,status);
-    if (*status==SEASON_MEMORY_ERROR){
+                           &new_season->number_of_teams,season_info,&season_creation_status);
+    if ((season_creation_status==SEASON_MEMORY_ERROR )){
         free(new_season);
         return NULL;
     }
     char* season_info_copy = malloc((strlen(season_info))+1);
     if(season_info_copy == NULL){ //If allocation fails frees all the allocated elements.
-        *status = SEASON_MEMORY_ERROR;
+        if (status!=NULL) {
+            *status = SEASON_MEMORY_ERROR;
+        }
         free(new_season);
         return NULL;
     }
     new_season->team_array = TeamArrayAllocation(new_season,season_info_copy);
     if (new_season->team_array == NULL){ //If allocation fails frees all the allocated elements.
+        if (status!=NULL){
+            *status=SEASON_MEMORY_ERROR;
+        }
         return NULL;
     }
     new_season->drivers_array = DriverArrayAllocation
             (new_season,season_info_copy,new_season->team_array);
     if (new_season->drivers_array == NULL){
+        if (status!=NULL){
+            *status=SEASON_MEMORY_ERROR;
+        }
         return NULL;
     }
     strcpy(season_info_copy,season_info);
@@ -283,11 +302,14 @@ static void SetDriversInSeason(char* driver_name, Driver* drivers_array,
  */
 static void DriversAndTeamsCounter(int* drivers, int* teams,
                                    const char* details,SeasonStatus* status){
+    assert(drivers!=NULL && teams!=NULL && details!=NULL);
     int number_of_drivers=0, number_of_teams=0;
     int line_number=0;
     char* season_details_copy=malloc((strlen(details))+1);
     if(season_details_copy==NULL){
-        *status=SEASON_MEMORY_ERROR;
+        if(status!=NULL) {
+            *status = SEASON_MEMORY_ERROR;
+        }
         return;
     }
     strcpy(season_details_copy,details);
@@ -306,7 +328,9 @@ static void DriversAndTeamsCounter(int* drivers, int* teams,
     *drivers = number_of_drivers;
     *teams = number_of_teams;
     free(season_details_copy);
-    *status = SEASON_OK;
+    if (status!=NULL) {
+        *status = SEASON_OK;
+    }
 }
 
 /**

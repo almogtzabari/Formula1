@@ -29,6 +29,9 @@ struct team{
  * set to be NULL).
  */
 Team TeamCreate(TeamStatus* status, char* name){
+    if (status==NULL){
+        return NULL;
+    }
     if(name==NULL){
         *status = TEAM_MEMORY_ERROR;
         return NULL;
@@ -64,9 +67,9 @@ void TeamDestroy(Team team){
     if(team!=NULL) {
         DriverDestroy(team->first_driver);
         DriverDestroy(team->second_driver);
+        free(team->name);
+        free(team);
     }
-    free(team->name);
-    free(team);
 }
 
 /** Tested: Yes
