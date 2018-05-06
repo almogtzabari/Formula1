@@ -31,7 +31,7 @@ struct team{
 Team TeamCreate(TeamStatus* status, char* name){
     if(name==NULL){
         if (status!=NULL){
-            *status = TEAM_MEMORY_ERROR;
+            *status = TEAM_NULL_PTR;
         }
         return NULL;
     }
@@ -152,8 +152,10 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
 int TeamGetPoints(Team team, TeamStatus *status){
     int sum=0;
     DriverStatus driver_status;
-    if(team == NULL || status == NULL){
-        *status = TEAM_NULL_PTR;
+    if(team == NULL){
+        if(status!=NULL){
+            *status = TEAM_NULL_PTR;
+        }
         return 0;
     }
     int points1 =DriverGetPoints(team->first_driver,&driver_status);
@@ -166,7 +168,9 @@ int TeamGetPoints(Team team, TeamStatus *status){
     if(driver_status == DRIVER_STATUS_OK){
         sum+=points2;
     }
-    *status = TEAM_STATUS_OK;
+    if(status!=NULL){
+        *status = TEAM_STATUS_OK;
+    }
     return sum;
 }
 

@@ -29,7 +29,7 @@ struct driver {
 Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     if (driver_name==NULL){
         if (status!=NULL){
-            *status=DRIVER_MEMORY_ERROR;
+            *status=INVALID_DRIVER;
         }
         return NULL;
     }
@@ -51,7 +51,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     }
     if(driverId<=0){
         if (status!=NULL){
-            *status=DRIVER_MEMORY_ERROR;
+            *status=INVALID_DRIVER;
         }
         free(name);
         return NULL;
@@ -149,15 +149,16 @@ void DriverSetSeason(Driver driver, Season season){
  * @param position - The driver's position in the last race.
  * @return Success/Failure of the function.
  */
-DriverStatus DriverAddRaceResult(Driver driver, int position){
-    if(driver == NULL){
+DriverStatus DriverAddRaceResult(Driver driver, int position) {
+    if (driver == NULL) {
         return INVALID_DRIVER;
     }
-    if (position<MIN_POSITION || position>SeasonGetNumberOfDrivers(DriverGetSeason(driver))){
-        return INVALID_POSITION;
-    }
-    if(driver->season_of_driver==NULL){
+    if (driver->season_of_driver == NULL) {
         return SEASON_NOT_ASSIGNED;
+    }
+    if (position < MIN_POSITION ||
+        position > SeasonGetNumberOfDrivers(DriverGetSeason(driver))) {
+        return INVALID_POSITION;
     }
     driver->points+=(SeasonGetNumberOfDrivers(driver->season_of_driver)-position);
     return DRIVER_STATUS_OK;

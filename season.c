@@ -182,7 +182,7 @@ static int FindLastPositionById(Season season, int id){
 Season SeasonCreate (SeasonStatus* status,const char* season_info){
     if (season_info==NULL){
         if(status!=NULL){
-            *status=SEASON_NULL_PTR;
+            *status=BAD_SEASON_INFO;
         }
         return NULL;
     }
@@ -523,6 +523,9 @@ Team SeasonGetTeamByPosition(Season season, int position, SeasonStatus* status){
         return NULL;
     }
     Team* sorted_team_array=SeasonGetTeamsStandings(season);
+    if(status!=NULL){
+        *status=SEASON_OK;
+    }
     return sorted_team_array[position-1];
 }
 
@@ -546,6 +549,9 @@ Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* stat
         return NULL;
     }
     Driver* sorted_driver_array=SeasonGetDriversStandings(season);
+    if(status!=NULL){
+        *status=SEASON_OK;
+    }
     return sorted_driver_array[position-1];
 }
 /**
