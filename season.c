@@ -549,10 +549,17 @@ Driver SeasonGetDriverByPosition(Season season, int position, SeasonStatus* stat
         return NULL;
     }
     Driver* sorted_driver_array=SeasonGetDriversStandings(season);
-    if(status!=NULL){
-        *status=SEASON_OK;
+    int id = DriverGetId(sorted_driver_array[position-1]);
+    free(sorted_driver_array);
+    for(int i=0;i<season->number_of_drivers;i++){
+        if(DriverGetId(season->drivers_array[i])==id){
+            if(status!=NULL){
+                *status=SEASON_OK;
+            }
+            return season->drivers_array[i];
+        }
     }
-    return sorted_driver_array[position-1];
+    return NULL; //Shouldn't get here.
 }
 /**
  ***** Function : DriverArrayAllocation *****

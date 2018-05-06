@@ -1,253 +1,434 @@
-
-#include <stdio.h>
-#include "team.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <assert.h>
 #include "season.h"
-#include "driver.h"
-#include <malloc.h>
 
-void Test();
+Driver getDummyDriver() {
+    return DriverCreate(NULL, "driver", 1);
+}
 
-/** Team declarations */
-void TeamTesting();
-void TeamPrint(Team team, TeamStatus team_status);
-void TeamPrintAddDriverStatus(TeamStatus status);
-void TeamPrintCreateStatus(TeamStatus status);
-/** End of team declarations */
+Team getDummyTeam() {
+    return TeamCreate(NULL, "team1");
+}
 
-/** Driver declarations */
-void DriverTesting();
-void DriverPrint(Driver driver);
-void DriverPrintCreateStatus(DriverStatus status);
-/** End of driver declarations */
+Season getDummySeason() {
+    char *seasonInfo = "\
+2018\n\
+Ferrari\n\
+Sebastian Vettel\n\
+Kimi Raikonen\n\
+Mercedes\n\
+Lewis Hamilton\n\
+Valtteri Bottas\n\
+RedBull Racing\n\
+Daniel\n\
+Max  Verstappen\n\
+McLaren\n\
+Fernando Alonso\n\
+None\n\
+";
+    return SeasonCreate(NULL, seasonInfo);
+}
 
-/** Season declarations */
-void SeasonTesting();
-void SeasonPrint(Season season);
-/** End of season declarations */
+void driverUnitTest() {
+    DriverStatus status;
+    int id = 1;
+    char *name1 = "driver1";
+    Driver driver1 = DriverCreate(&status, name1, id);
+    if (status == DRIVER_STATUS_OK) {
+        assert(driver1);
+    } else if (status == DRIVER_MEMORY_ERROR) {
+        assert(!driver1);
+    } else {
+        assert(false);
+    }
+    assert(!DriverGetId(NULL));
+    assert(DriverGetId(driver1) == id);
+    assert(strcmp(DriverGetName(driver1), name1) == 0);
+    assert(!DriverGetName(NULL));
+    assert(!DriverGetTeam(driver1));
+    assert(!DriverGetTeam(NULL));
+    Team team = getDummyTeam();
+    assert(team);
+    DriverSetTeam(NULL, NULL);
+    assert(!DriverGetTeam(driver1));
+    DriverSetTeam(driver1, NULL);
+    assert(!DriverGetTeam(driver1));
+    DriverSetTeam(NULL, team);
+    assert(!DriverGetTeam(driver1));
+    DriverSetTeam(driver1, team);
+    assert(DriverGetTeam(driver1) == team);
+    DriverSetTeam(driver1, NULL);
+    assert(!DriverGetTeam(driver1));
+    DriverSetTeam(driver1, team);
+    TeamDestroy(team);
+    assert(DriverGetPoints(driver1, NULL) == 0);
+    assert(DriverAddRaceResult(driver1, 1) == SEASON_NOT_ASSIGNED);
+    assert(DriverGetPoints(driver1, NULL) == 0);
+    Season season = getDummySeason();
+    assert(season);
+    DriverSetSeason(NULL, NULL);
+    DriverSetSeason(NULL, season);
+    DriverSetSeason(driver1, NULL);
+    DriverSetSeason(driver1, season);
+    assert(DriverGetPoints(driver1, NULL) == 0);
+    assert(DriverAddRaceResult(driver1, 1) == DRIVER_STATUS_OK);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    assert(DriverAddRaceResult(NULL, 1) == INVALID_DRIVER);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    assert(DriverAddRaceResult(driver1, 0) == INVALID_POSITION);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    assert(DriverAddRaceResult(driver1, -1) == INVALID_POSITION);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    assert(DriverAddRaceResult(driver1, 8) == INVALID_POSITION);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    assert(DriverAddRaceResult(driver1, 7) == DRIVER_STATUS_OK);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    DriverGetPoints(NULL, &status);
+    assert(status == INVALID_DRIVER);
+    DriverGetPoints(driver1, &status);
+    assert(status == DRIVER_STATUS_OK);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    DriverSetSeason(NULL, season);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    DriverSetSeason(driver1, season);
+    assert(DriverGetPoints(driver1, NULL) == 0);
+    SeasonDestroy(season);
+    DriverDestroy(driver1);
+    driver1 = NULL;
+    DriverDestroy(driver1);
+    Driver driver2 = DriverCreate(&status, NULL, 2);
+    assert(status == INVALID_DRIVER && !driver2);
+    Driver driver3 = DriverCreate(&status, "driver3", 0);
+    assert(status == INVALID_DRIVER && !driver3);
+    Driver driver4 = DriverCreate(&status, "driver4", -1);
+    assert(status == INVALID_DRIVER && !driver4);
+    Driver driver5 = DriverCreate(&status, NULL, -1);
+    assert(status == INVALID_DRIVER && !driver5);
+    char *nameBefore = "driver6";
+    Driver driver6 = DriverCreate(&status, nameBefore, 6);
+    assert(driver6);
+    assert(strcmp(DriverGetName(driver6), "driver6") == 0);
+    nameBefore = "name after";
+    assert(strcmp(DriverGetName(driver6), nameBefore) != 0);
+    assert(strcmp(DriverGetName(driver6), "driver6") == 0);
+    DriverDestroy(driver6);
+    Driver driver7 = DriverCreate(NULL, "driver7", 7);
+    DriverDestroy(driver7);
+}
 
+void teamUnitTest() {
+    TeamStatus status;
+    Team team1 = TeamCreate(&status, "team1");
+    if (status == TEAM_STATUS_OK) {
+        assert(team1);
+    } else if (status == TEAM_MEMORY_ERROR) {
+        assert(!team1);
+    } else {
+        assert(false);
+    }
+    assert(strcmp(TeamGetName(team1), "team1") == 0);
+    assert(!TeamGetName(NULL));
+    Driver driver1 = getDummyDriver();
+    Driver driver2 = getDummyDriver();
+    assert(driver1 && driver2);
+    Season season = getDummySeason();
+    assert(season);
+    DriverSetSeason(driver1, season);
+    DriverAddRaceResult(driver1, 1);
+    assert(DriverGetPoints(driver1, NULL) == 6);
+    DriverSetSeason(driver2, season);
+    DriverAddRaceResult(driver2, 1);
+    assert(DriverGetPoints(driver2, NULL) == 6);
+    assert(!TeamGetDriver(NULL, FIRST_DRIVER));
+    assert(!TeamGetDriver(team1, -1));
+    assert(!TeamGetDriver(team1, 2));
+    assert(!TeamGetDriver(team1, FIRST_DRIVER));
+    assert(!TeamGetDriver(team1, SECOND_DRIVER));
+    assert(TeamAddDriver(NULL, NULL) == TEAM_NULL_PTR);
+    assert(!TeamGetDriver(team1, FIRST_DRIVER));
+    assert(!TeamGetDriver(team1, SECOND_DRIVER));
+    assert(TeamAddDriver(NULL, driver1) == TEAM_NULL_PTR);
+    assert(!TeamGetDriver(team1, FIRST_DRIVER));
+    assert(!TeamGetDriver(team1, SECOND_DRIVER));
+    assert(TeamAddDriver(team1, NULL) == TEAM_NULL_PTR);
+    assert(!TeamGetDriver(team1, FIRST_DRIVER));
+    assert(!TeamGetDriver(team1, SECOND_DRIVER));
+    assert(TeamGetPoints(NULL, NULL) == 0);
+    assert(TeamGetPoints(NULL, &status) == 0);
+    assert(status == TEAM_NULL_PTR);
+    assert(TeamGetPoints(team1, NULL) == 0);
+    assert(TeamGetPoints(team1, &status) == 0);
+    assert(status == TEAM_STATUS_OK);
+    assert(TeamAddDriver(team1, driver1) == TEAM_STATUS_OK);
+    assert(TeamGetDriver(team1, FIRST_DRIVER) == driver1);
+    assert(!TeamGetDriver(team1, SECOND_DRIVER));
+    assert(TeamGetPoints(team1, &status) == 6);
+    assert(status == TEAM_STATUS_OK);
+    assert(TeamAddDriver(team1, driver2) == TEAM_STATUS_OK);
+    assert(TeamGetDriver(team1, FIRST_DRIVER) == driver1);
+    assert(TeamGetDriver(team1, SECOND_DRIVER) == driver2);
+    assert(TeamGetPoints(team1, &status) == 12);
+    assert(status == TEAM_STATUS_OK);
+    assert(TeamAddDriver(team1, driver1) == TEAM_FULL);
+    assert(TeamGetDriver(team1, FIRST_DRIVER) == driver1);
+    assert(TeamGetDriver(team1, SECOND_DRIVER) == driver2);
+    assert(TeamAddDriver(team1, driver1) == TEAM_FULL);
+    assert(TeamGetDriver(team1, FIRST_DRIVER) == driver1);
+    assert(TeamGetDriver(team1, SECOND_DRIVER) == driver2);
+    SeasonDestroy(season);
+    TeamDestroy(team1);
+    team1 = NULL;
+    TeamDestroy(team1);
+    Team team2 = TeamCreate(NULL, "team2");
+    TeamDestroy(team2);
+    Team team3 = TeamCreate(&status, NULL);
+    assert(status == TEAM_NULL_PTR && !team3);
+    Team team4 = TeamCreate(NULL, NULL);
+    assert(status == TEAM_NULL_PTR && !team4);
+    char *nameBefore = "team5";
+    Team team5 = TeamCreate(&status, nameBefore);
+    assert(team5);
+    assert(strcmp(TeamGetName(team5), "team5") == 0);
+    nameBefore = "name after";
+    assert(strcmp(TeamGetName(team5), nameBefore) != 0);
+    assert(strcmp(TeamGetName(team5), "team5") == 0);
+    TeamDestroy(team5);
+}
+
+void testDriverPosition(Driver driver, char *name, int points) {
+    assert(driver);
+    assert(strcmp(DriverGetName(driver), name) == 0);
+    assert(DriverGetPoints(driver, NULL) == points);
+}
+
+void testDriverByPositionFunc(Season season, int position,
+                              char *name, int points) {
+    SeasonStatus status;
+    Driver driver = SeasonGetDriverByPosition(season, position, &status);
+    if (status == SEASON_OK) {
+        testDriverPosition(driver, name, points);
+    } else if (status == SEASON_MEMORY_ERROR) {
+        assert(!driver);
+    } else {
+        assert(false);
+    }
+}
+
+void testTeamPosition(Team team, char *name, int points) {
+    assert(team);
+    assert(strcmp(TeamGetName(team), name) == 0);
+    assert(TeamGetPoints(team, NULL) == points);
+}
+
+void testTeamByPositionFunc(Season season, int position,
+                            char *name, int points) {
+    SeasonStatus status;
+    Team team = SeasonGetTeamByPosition(season, position, &status);
+    if (status == SEASON_OK) {
+        testTeamPosition(team, name, points);
+    } else if (status == SEASON_MEMORY_ERROR) {
+        assert(!team);
+    } else {
+        assert(false);
+    }
+}
+
+void seasonUnitTest() {
+    SeasonStatus status;
+    char *seasonInfo = "\
+2018\n\
+Ferrari\n\
+Sebastian Vettel\n\
+Kimi Raikonen\n\
+Mercedes\n\
+Lewis Hamilton\n\
+Valtteri Bottas\n\
+RedBull Racing\n\
+Daniel\n\
+Max  Verstappen\n\
+McLaren\n\
+Fernando Alonso\n\
+None\n\
+";
+    Season season1 = SeasonCreate(&status, seasonInfo);
+    if (status == SEASON_OK) {
+        assert(season1);
+    } else if (status == SEASON_MEMORY_ERROR) {
+        assert(!season1);
+    } else {
+        assert(false);
+    }
+    assert(SeasonGetNumberOfTeams(season1) == 4);
+    assert(!SeasonGetNumberOfTeams(NULL));
+    assert(SeasonGetNumberOfDrivers(season1) == 7);
+    assert(!SeasonGetNumberOfDrivers(NULL));
+    int results1[7] = {1, 2, 3, 4, 5, 6, 7};
+    assert(SeasonAddRaceResult(NULL, NULL) == SEASON_NULL_PTR);
+    assert(SeasonAddRaceResult(season1, NULL) == SEASON_NULL_PTR);
+    assert(SeasonAddRaceResult(NULL, results1) == SEASON_NULL_PTR);
+    assert(SeasonAddRaceResult(season1, results1) == SEASON_OK);
+    Driver driver = SeasonGetDriverByPosition(season1, 1, NULL);
+    assert(driver);
+    driver = SeasonGetDriverByPosition(NULL, 1, &status);
+    assert(status == SEASON_NULL_PTR && !driver);
+    driver = SeasonGetDriverByPosition(season1, 0, &status);
+    assert(status == SEASON_NULL_PTR && !driver);
+    driver = SeasonGetDriverByPosition(season1, 8, &status);
+    assert(status == SEASON_NULL_PTR && !driver);
+    assert(!SeasonGetDriversStandings(NULL));
+    Driver *driverStandings = SeasonGetDriversStandings(season1);
+    assert(driverStandings);
+    testDriverPosition(driverStandings[0], "Sebastian Vettel", 6);
+    testDriverPosition(driverStandings[1], "Kimi Raikonen", 5);
+    testDriverPosition(driverStandings[2], "Lewis Hamilton", 4);
+    testDriverPosition(driverStandings[3], "Valtteri Bottas", 3);
+    testDriverPosition(driverStandings[4], "Daniel", 2);
+    testDriverPosition(driverStandings[5], "Max  Verstappen", 1);
+    testDriverPosition(driverStandings[6], "Fernando Alonso", 0);
+    testDriverByPositionFunc(season1, 1, "Sebastian Vettel", 6);
+    testDriverByPositionFunc(season1, 2, "Kimi Raikonen", 5);
+    testDriverByPositionFunc(season1, 3, "Lewis Hamilton", 4);
+    testDriverByPositionFunc(season1, 4, "Valtteri Bottas", 3);
+    testDriverByPositionFunc(season1, 5, "Daniel", 2);
+    testDriverByPositionFunc(season1, 6, "Max  Verstappen", 1);
+    testDriverByPositionFunc(season1, 7, "Fernando Alonso", 0);
+    Team team = SeasonGetTeamByPosition(season1, 1, NULL);
+    assert(team);
+    team = SeasonGetTeamByPosition(NULL, 1, &status);
+    assert(status == SEASON_NULL_PTR && !team);
+    team = SeasonGetTeamByPosition(season1, 0, &status);
+    assert(status == SEASON_NULL_PTR && !team);
+    team = SeasonGetTeamByPosition(season1, 5, &status);
+    assert(status == SEASON_NULL_PTR && !team);
+    assert(!SeasonGetTeamsStandings(NULL));
+    Team *teamStandings = SeasonGetTeamsStandings(season1);
+    testTeamPosition(teamStandings[0], "Ferrari", 11);
+    testTeamPosition(teamStandings[1], "Mercedes", 7);
+    testTeamPosition(teamStandings[2], "RedBull Racing", 3);
+    testTeamPosition(teamStandings[3], "McLaren", 0);
+    testTeamByPositionFunc(season1, 1, "Ferrari", 11);
+    testTeamByPositionFunc(season1, 2, "Mercedes", 7);
+    testTeamByPositionFunc(season1, 3, "RedBull Racing", 3);
+    testTeamByPositionFunc(season1, 4, "McLaren", 0);
+    free(driverStandings);
+    free(teamStandings);
+    int results2[7] = {3, 4, 1, 2, 5, 7, 6};
+    assert(SeasonAddRaceResult(season1, results2) == SEASON_OK);
+    driverStandings = SeasonGetDriversStandings(season1);
+    teamStandings = SeasonGetTeamsStandings(season1);
+    testDriverPosition(driverStandings[0], "Lewis Hamilton", 10);
+    testDriverPosition(driverStandings[1], "Sebastian Vettel", 10);
+    testDriverPosition(driverStandings[2], "Valtteri Bottas", 8);
+    testDriverPosition(driverStandings[3], "Kimi Raikonen", 8);
+    testDriverPosition(driverStandings[4], "Daniel", 4);
+    testDriverPosition(driverStandings[5], "Fernando Alonso", 1);
+    testDriverPosition(driverStandings[6], "Max  Verstappen", 1);
+    testDriverByPositionFunc(season1, 1, "Lewis Hamilton", 10);
+    testDriverByPositionFunc(season1, 2, "Sebastian Vettel", 10);
+    testDriverByPositionFunc(season1, 3, "Valtteri Bottas", 8);
+    testDriverByPositionFunc(season1, 4, "Kimi Raikonen", 8);
+    testDriverByPositionFunc(season1, 5, "Daniel", 4);
+    testDriverByPositionFunc(season1, 6, "Fernando Alonso", 1);
+    testDriverByPositionFunc(season1, 7, "Max  Verstappen", 1);
+    testTeamPosition(teamStandings[0], "Mercedes", 18);
+    testTeamPosition(teamStandings[1], "Ferrari", 18);
+    testTeamPosition(teamStandings[2], "RedBull Racing", 5);
+    testTeamPosition(teamStandings[3], "McLaren", 1);
+    testTeamByPositionFunc(season1, 1, "Mercedes", 18);
+    testTeamByPositionFunc(season1, 2, "Ferrari", 18);
+    testTeamByPositionFunc(season1, 3, "RedBull Racing", 5);
+    testTeamByPositionFunc(season1, 4, "McLaren", 1);
+    free(driverStandings);
+    free(teamStandings);
+    int results3[7] = {7, 1, 2, 3, 5, 4, 6};
+    assert(SeasonAddRaceResult(season1, results3) == SEASON_OK);
+    driverStandings = SeasonGetDriversStandings(season1);
+    teamStandings = SeasonGetTeamsStandings(season1);
+    testDriverPosition(driverStandings[0], "Sebastian Vettel", 15);
+    testDriverPosition(driverStandings[1], "Lewis Hamilton", 13);
+    testDriverPosition(driverStandings[2], "Kimi Raikonen", 12);
+    testDriverPosition(driverStandings[3], "Valtteri Bottas", 9);
+    testDriverPosition(driverStandings[4], "Fernando Alonso", 7);
+    testDriverPosition(driverStandings[5], "Daniel", 6);
+    testDriverPosition(driverStandings[6], "Max  Verstappen", 1);
+    testDriverByPositionFunc(season1, 1, "Sebastian Vettel", 15);
+    testDriverByPositionFunc(season1, 2, "Lewis Hamilton", 13);
+    testDriverByPositionFunc(season1, 3, "Kimi Raikonen", 12);
+    testDriverByPositionFunc(season1, 4, "Valtteri Bottas", 9);
+    testDriverByPositionFunc(season1, 5, "Fernando Alonso", 7);
+    testDriverByPositionFunc(season1, 6, "Daniel", 6);
+    testDriverByPositionFunc(season1, 7, "Max  Verstappen", 1);
+    testTeamPosition(teamStandings[0], "Ferrari", 27);
+    testTeamPosition(teamStandings[1], "Mercedes", 22);
+    testTeamPosition(teamStandings[2], "McLaren", 7);
+    testTeamPosition(teamStandings[3], "RedBull Racing", 7);
+    testTeamByPositionFunc(season1, 1, "Ferrari", 27);
+    testTeamByPositionFunc(season1, 2, "Mercedes", 22);
+    testTeamByPositionFunc(season1, 3, "McLaren", 7);
+    testTeamByPositionFunc(season1, 4, "RedBull Racing", 7);
+    free(driverStandings);
+    free(teamStandings);
+    SeasonDestroy(season1);
+    season1 = NULL;
+    SeasonDestroy(season1);
+    Season season2 = SeasonCreate(NULL, seasonInfo);
+    SeasonDestroy(season2);
+    Season season3 = SeasonCreate(&status, NULL);
+    assert(status == BAD_SEASON_INFO && !season3);
+    seasonInfo = "\
+2018\n\
+None\n\
+Driver1\n\
+None\n\
+";
+    Season season4 = SeasonCreate(&status, seasonInfo);
+    assert(SeasonGetNumberOfTeams(season4) == 1);
+    assert(SeasonGetNumberOfDrivers(season4) == 1);
+    SeasonDestroy(season4);
+}
+
+void exampleTest() {
+    DriverStatus driver_status;
+    TeamStatus team_status;
+    Driver Lewis = DriverCreate(&driver_status, "Lewis", 44);
+    Team Mercedes = TeamCreate(&team_status, "Mercedes");
+    DriverSetTeam(Lewis, Mercedes);
+    assert(strcmp(DriverGetName(Lewis), "Lewis") == 0);
+    assert(strcmp(TeamGetName(DriverGetTeam(Lewis)), "Mercedes") == 0);
+    DriverDestroy(Lewis);
+    TeamDestroy(Mercedes);
+
+    /*now lets try to create a season
+    all drivers/teams created above are not related to the season.*/
+
+    SeasonStatus season_status;
+    char *season_info = "\
+2018\n\
+Ferrari\n\
+Sebastian Vettel\n\
+Kimi Raikonen\n\
+Mercedes\n\
+Lewis Hamilton\n\
+Valtteri Bottas\n\
+RedBull Racing\n\
+Daniel\n\
+Max  Verstappen\n\
+McLaren\n\
+Fernando Alonso\n\
+None\n\
+";
+    Season season = SeasonCreate(&season_status, season_info);
+    int race_results[7] = {7, 1, 3, 2, 4, 5, 6};
+    SeasonAddRaceResult(season, race_results);
+    SeasonDestroy(season);
+}
 
 int main() {
-//    TeamTesting();
-//    printf("------------------------------------------------------------");
-//    DriverTesting();
-//    printf("------------------------------------------------------------");
-    SeasonTesting();
-//    Test();
+    driverUnitTest();
+    teamUnitTest();
+    seasonUnitTest();
+    exampleTest();
     return 0;
-}
-
-
-/***** Team testing functions *****/
-/* Testing: TeamCreate, TeamGetPoints, TeamAddDriver,     */
-void TeamTesting(){
-    printf("\n\nStarting TeamTesting() in:\n3...\n2...\n1...\n\n");
-    TeamStatus team_status;
-    DriverStatus driver_status;
-    printf("Creating first driver...\n");
-    Driver first_driver = DriverCreate(&driver_status,"Yohan Kfir",3115445); // Creating first driver.
-    DriverPrintCreateStatus(driver_status);
-    printf("Creating second driver...\n");
-    Driver second_driver = DriverCreate(&driver_status,"Moshe Daood",203548); // Creating second driver.
-    DriverPrintCreateStatus(driver_status);
-    printf("Creating third driver...\n");
-    Driver third_driver = DriverCreate(&driver_status,"Ben Weinsteffen",789156); // Creating third driver.
-    DriverPrintCreateStatus(driver_status);
-    printf("Creating team...\n");
-    Team team = TeamCreate(&team_status,"Ford"); // Creates a team.
-    TeamPrintCreateStatus(team_status);
-    printf("Adding first driver...\n");
-    TeamStatus first_driver_status = TeamAddDriver(team,first_driver); // Adding first driver.
-    TeamPrintAddDriverStatus(first_driver_status); // Add first driver to team success/fail.
-    printf("Adding second driver...\n");
-    TeamStatus second_driver_status = TeamAddDriver(team,second_driver); // Adding second driver.
-    TeamPrintAddDriverStatus(second_driver_status); // Add second driver to team success/fail.
-    printf("Adding third driver...\n");
-    TeamStatus third_driver_status = TeamAddDriver(team,third_driver); // Attempt to add third driver to a team. Should fail.
-    TeamPrintAddDriverStatus(third_driver_status); // Add third driver to team success/fail.
-//    DriverDestroy(first_driver); // NOT SURE IF WORKING. Suppose to destroying first driver.
-//    DriverDestroy(second_driver); // NOT SURE IF WORKING. Suppose to destroying second driver.
-    printf("\nPrinting Team:\n\n");
-    TeamPrint(team, team_status);
-    printf("\nTeamTesting() is done\n");
-}
-
-/** Printing team details: name,points,drivers. */
-void TeamPrint(Team team, TeamStatus team_status){
-//    DriverStatus driver_status;
-    printf("Team Name: %s\n",TeamGetName(team));
-    int team_points = TeamGetPoints(team,&team_status);
-    printf("Team Points: %d\n", team_points);
-    printf("Drivers:\n\n");
-    DriverPrint(TeamGetDriver(team,FIRST_DRIVER));
-    DriverPrint(TeamGetDriver(team,SECOND_DRIVER));
-}
-
-/** Printing if adding a driver to a team was a success/fail. */
-void TeamPrintAddDriverStatus(TeamStatus status){
-    switch(status){
-        case TEAM_STATUS_OK: printf("Driver successfully added.\n\n"); break;
-        case TEAM_MEMORY_ERROR: printf("Driver not added: memory error.\n\n"); break;
-        case TEAM_FULL: printf("Driver not added: team is full.\n"); break;
-        default: ; break;
-    }
-}
-
-/** Printing if creating a team was a success/fail. */
-void TeamPrintCreateStatus(TeamStatus status){
-    switch(status){
-        case TEAM_STATUS_OK: printf("Team successfully created.\n\n"); break;
-        case TEAM_MEMORY_ERROR: printf("Team not created: Memory Error.\n\n"); break;
-        default: ; break;
-    }
-}
-/***** End of team testing functions *****/
-
-
-/***** Driver testing functions *****/
-/* Testing: DriverCreate, DriverGetName, DriverGetId, DriverGetPoints */
-void DriverTesting() {
-    printf("\n\nStarting DriverTesting() in:\n3...\n2...\n1...\n\n");
-    DriverStatus driver_status;
-    printf("Creating first driver...\n");
-    Driver first_driver = DriverCreate(&driver_status,"Yohan Kfir",3115445); // Creating first driver.
-    DriverPrintCreateStatus(driver_status);
-    printf("Creating second driver...\n");
-    Driver second_driver = DriverCreate(&driver_status,"Moshe Daood",203548); // Creating second driver.
-    DriverPrintCreateStatus(driver_status);
-    printf("Creating third driver...\n");
-    Driver third_driver = DriverCreate(&driver_status,"Ben Weinsteffen",789156); // Creating third driver.
-    DriverPrintCreateStatus(driver_status);
-    printf("\nPrinting Drivers:\n\n");
-    printf("First Driver:\n");
-    DriverPrint(first_driver);
-    printf("Second Driver:\n");
-    DriverPrint(second_driver);
-    printf("Third Driver:\n");
-    DriverPrint(third_driver);
-}
-
-/** Printing driver details: name,id,points. */
-void DriverPrint(Driver driver){
-    DriverStatus status;
-    printf("Driver Name: %s\n",DriverGetName(driver));
-    printf("Driver ID: %d\n",DriverGetId(driver));
-    int points = DriverGetPoints(driver, &status);
-    if (status == DRIVER_STATUS_OK) {
-        printf("Driver Points: %d\n\n", points);
-    }
-    else printf("Error calculating points\n\n");
-}
-
-/** Printing if creating a driver was a success/fail. */
-void DriverPrintCreateStatus(DriverStatus status){
-    switch(status){
-        case DRIVER_STATUS_OK: printf("Driver successfully created.\n\n"); break;
-        case DRIVER_MEMORY_ERROR: printf("Driver not created: memory error.\n\n"); break;
-        case INVALID_DRIVER: printf("Driver not created: pointer is NULL.\n\n"); break;
-        default: ; break;
-    }
-}
-
-
-/***** End of driver testing functions *****/
-
-/***** Season testing functions *****/
-void SeasonTesting(){
-    SeasonStatus season_status;
-    TeamStatus team_status;
-//    DriverStatus status;
-    char* string = "2018\nFerrari\nSebastian Vettel\nKimi Raikonen\nMercedes\nLewis Hamilton\nValtteri Bottas\nRedBull Racing\nDaniel\nMax Verstappen\nMcLaren\nFernando Alonso\nNone";
-    Season season = SeasonCreate(&season_status,string);
-    int test_results [7] = {1,2,3,4,5,6,7};
-    SeasonAddRaceResult(season,test_results);
-    int test_results2 [7] = {3,4,1,2,5,6,7};
-    Team winner = SeasonGetTeamByPosition(season,1,&season_status);
-    printf("The winning team is:\n");
-    TeamPrint(winner,team_status);
-    SeasonAddRaceResult(season,test_results2);
-    SeasonPrint(season);
-    SeasonDestroy(season);
-}
-
-void SeasonPrint(Season season){
-    int number_of_teams = SeasonGetNumberOfTeams(season);
-    int number_of_drivers = SeasonGetNumberOfDrivers(season);
-    DriverStatus status;
-    printf("Number of teams in season: %d\n",number_of_teams);
-//    Team* teams_array = SeasonGetTeamsStandings(season);
-    Driver* drivers_array = SeasonGetDriversStandings(season);
-    for(int i=0;i<number_of_drivers;i++){
-        Driver driver = drivers_array[i];
-        printf("driver name: %s\n",DriverGetName(driver));
-        printf("Points: %d\n",DriverGetPoints(driver,&status));
-    }
-    printf("Number of drivers in season: %d\n",number_of_drivers);
-}
-/***** End of season testing functions *****/
-
-
-void Test(){
-    printf(" -* Starting Test 1 *-\n");
-    /** Driver's name is including "None" (btw, those are real names) */
-    SeasonStatus st;
-    char* season_info1="\
-7\n\
-Ferrari\n\
-Noned Roy\n\
-Its Britney bitch\n\
-wtf!_-TeaMname55\n\
-None\n\
-OINone\n\
-Team Name With None\n\
-GGG\n\
-None\n\
-";
-    Season season = SeasonCreate(&st,season_info1);
-    int race1[4] = {2,3,4,1};
-    SeasonAddRaceResult(season, race1);
-    int race2[4] = {1,3,4,2};
-    SeasonAddRaceResult(season, race2);
-    printf("Winner driver .......(OINone): %s\n", DriverGetName(SeasonGetDriverByPosition(season,1,&st)));
-    printf("2nd driver .......(Noned Roy): %s\n", DriverGetName(SeasonGetDriverByPosition(season,2,&st)));
-    printf("2nd team ..(wtf!_-TeaMname55): %s\n", TeamGetName(SeasonGetTeamByPosition(season,2,&st)));
-    SeasonDestroy(season);
-    printf("\n -* Starting Test 2A *-\n");
-    char* season_info2="\
-7777557\n\
-SUSITA FTW\n\
-a\n\
-BBB\n\
-Noners\n\
-CCC\n\
-dog kisser\n\
-RedBull Poison\n\
-eee\n\
-The Crusher\n\
-Real winners drink wine\n\
-g g g g g g\n\
-None\n\
-";
-    Season season2 = SeasonCreate(&st,season_info2);
-    int race_results[7] = {4, 1,3,2,7,5,6};
-    SeasonAddRaceResult(season2, race_results);
-    int race_results2[7] = {1, 3,6,4,5,7,2};
-    SeasonAddRaceResult(season2, race_results2);
-    printf("3rd driver ......(dog kisser): %s\n", DriverGetName(SeasonGetDriverByPosition(season2,3,&st)));
-    printf("5th driver .............(eee): %s\n", DriverGetName(SeasonGetDriverByPosition(season2,5,&st)));
-    printf("2nd team ........(SUSITA FTW): %s\n", TeamGetName(SeasonGetTeamByPosition(season2,2,&st)));
-    printf(" -* Starting Test 2B *-\n");
-    int race_results3[7] = {5,6,7,2,1,3,4};
-    SeasonAddRaceResult(season2, race_results3);
-    printf("Winner driver ............(a): %s\n", DriverGetName(SeasonGetDriverByPosition(season2,1,&st)));
-    printf("6th driver .....(g g g g g g): %s\n", DriverGetName(SeasonGetDriverByPosition(season2,6,&st)));
-    printf("Winner team .....(SUSITA FTW): %s\n", TeamGetName(SeasonGetTeamByPosition(season2,1,&st)));
-    printf(" -* Starting Test 2C *-\n");
-    int race_results4[7] = {6,7,4,1,2,3,5};
-    SeasonAddRaceResult(season2, race_results4);
-    printf("Winner driver ............(a): %s\n", DriverGetName(SeasonGetDriverByPosition(season2,1,&st)));
-    printf("Winner team .(RedBull Poison): %s\n", TeamGetName(SeasonGetTeamByPosition(season2,1,&st)));
-    printf("2nd team ............(Noners): %s\n", TeamGetName(SeasonGetTeamByPosition(season2,2,&st)));
-
-    SeasonDestroy(season2);
-    printf("\nFinished! Check your score above.\n");
 }

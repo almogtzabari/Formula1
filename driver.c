@@ -49,10 +49,11 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
         free(name);
         return NULL;
     }
-    if(driverId<=0){
+    if(driverId<=0){ // Invalid ID
         if (status!=NULL){
             *status=INVALID_DRIVER;
         }
+        free(driver);
         free(name);
         return NULL;
     }
