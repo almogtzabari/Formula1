@@ -29,31 +29,36 @@ struct team{
  * set to be NULL).
  */
 Team TeamCreate(TeamStatus* status, char* name){
-    if (status==NULL){
-        return NULL;
-    }
     if(name==NULL){
-        *status = TEAM_MEMORY_ERROR;
+        if (status!=NULL){
+            *status = TEAM_MEMORY_ERROR;
+        }
         return NULL;
     }
     char* string = malloc(strlen(name)+1);
     /** String memory allocation failed. */
     if(string==NULL){
-        *status = TEAM_MEMORY_ERROR;
+        if (status!=NULL){
+            *status = TEAM_MEMORY_ERROR;
+        }
         return NULL;
     }
     strcpy(string,name);
     Team team = malloc(sizeof(*team));
     /** Team memory allocation failed. */
     if(team == NULL){
-        *status = TEAM_MEMORY_ERROR;
+        if (status!=NULL){
+            *status = TEAM_MEMORY_ERROR;
+        }
         free(string);
         return NULL;
     }
     team->name = string;
     team->first_driver = NULL; // Not sure.
     team->second_driver = NULL; // Not sure.
-    *status = TEAM_STATUS_OK;
+    if (status!=NULL){
+        *status = TEAM_STATUS_OK;
+    }
     return team;
 }
 
