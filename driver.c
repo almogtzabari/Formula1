@@ -187,11 +187,13 @@ int DriverGetPoints(Driver driver, DriverStatus* status){
     }
     return driver->points;
 }
+/** Static functions */
 /**
- ***** Function: DriverGetSeason *****
+ *****  Function: DriverGetSeason *****
  * @param driver - A pointer to a driver.
  * @return - the season of the driver.
  */
 static Season DriverGetSeason(Driver driver){
     return driver->season_of_driver;
 }
+/** End of static functions */
