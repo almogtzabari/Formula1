@@ -19,7 +19,7 @@ struct team{
  * Description: The function gets a string team's name and creates a new
  * team. If the create was a success a pointer to the team is returned,
  * else NULL.
- * @param status - Success/fail.
+ * @param status - Success/failure of the function (if fails - with cause).
  * @param name - name of the new team.
  * @return Pointer to the new team.
  * Note: The team is created without drivers (first and second drivers are
@@ -78,7 +78,7 @@ void TeamDestroy(Team team){
  * Description: Adds 'driver' to 'team' if the team isn't full.
  * @param team - Pointer to a 'team'.
  * @param driver - Pointer to a 'driver'
- * @return Status - Success/fail of creation (if fails - with cause).
+ * @return Status - Success/failure of the function (if fails - with cause).
  */
 TeamStatus TeamAddDriver(Team team, Driver driver){
     if(team == NULL || driver == NULL)
@@ -138,7 +138,7 @@ Driver TeamGetDriver(Team team, DriverNumber driver_number){
  * null and updating the status to 'TEAM_NULL_PTR'. If everything is okay
  * then status will be updated to 'TEAM_STATUS_OK'.
  * @param team - Pointer to a team.
- * @param status - Success/fail of the function (if fails - with cause).
+ * @param status - Success/failure of the function (if fails - with cause).
  * @return Number of points the 'team' has.
  */
 int TeamGetPoints(Team team, TeamStatus *status){
