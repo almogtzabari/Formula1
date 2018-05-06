@@ -327,6 +327,8 @@ Driver SeasonGetDriverByPosition(Season season, int position,
     }
     return NULL; //Shouldn't get here.
 }
+
+/** Static functions */
 /**
  ***** Static function : DriverArrayAllocation *****
  *  Description: allocates memory for the drivers array according to the number of drivers
@@ -656,3 +658,5 @@ static int FindCurrentWinningTeam
     points[winning_team_index]=-1;
     return winning_team_index;
 }
+
+/** End of static functions */
