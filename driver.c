@@ -7,7 +7,7 @@
 #define MIN_POSITION 1
 
 /** Declarations */
-
+static Season DriverGetSeason(Driver driver);
 /** End of decalarations */
 
 struct driver {
@@ -27,6 +27,12 @@ struct driver {
  * @return returns NULL in case of failure or pointer to the created driver in case of success.
  */
 Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
+    if (driver_name==NULL){
+        if (status!=NULL){
+            *status=DRIVER_MEMORY_ERROR;
+        }
+        return NULL;
+    }
     char* name = malloc(strlen(driver_name)+1);
     if (name==NULL){
         if (status!=NULL){
@@ -54,6 +60,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     driver->driver_name=name;
     driver->season_of_driver = NULL;
     driver->points = 0;
+    driver->team = NULL;
     if (status!=NULL){
         *status=DRIVER_STATUS_OK;
     }
@@ -66,7 +73,7 @@ Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
  * @param team A pointer to a team.
  */
 void DriverSetTeam(Driver driver, Team team){
-    if (driver==NULL || team==NULL){
+    if (driver==NULL){
         return;
     }
     driver->team=team;
@@ -146,7 +153,7 @@ DriverStatus DriverAddRaceResult(Driver driver, int position){
     if(driver == NULL){
         return INVALID_DRIVER;
     }
-    if (position<MIN_POSITION){
+    if (position<MIN_POSITION || position>SeasonGetNumberOfDrivers(DriverGetSeason(driver))){
         return INVALID_POSITION;
     }
     if(driver->season_of_driver==NULL){
@@ -174,4 +181,7 @@ int DriverGetPoints(Driver driver, DriverStatus* status){
         *status = DRIVER_STATUS_OK;
     }
     return driver->points;
+}
+static Season DriverGetSeason(Driver driver){
+    return driver->season_of_driver;
 }
