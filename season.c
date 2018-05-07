@@ -3,7 +3,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
-#include "driver.h"
+#include "season.h"
 #include <stdlib.h>
 
 
@@ -17,8 +17,8 @@ static void DriversArrayToPointsArray(int *drivers_points,
 static int FindIndexOfMaxPointsDriver(Season season,
                                       int* points, int number_of_drivers);
 static int FindLastPositionById(Season season, int id);
-static int FindCurrentWinningTeam (Season season, int* points,
-                                   int number_of_teams);
+static int FindIndexOfMaxPointsTeam(Season season, int *points,
+                                    int number_of_teams);
 static int FindBestTeamDriverPosition (Season season,Team team);
 static Driver* DriverArrayAllocation(Season season,Team* teams_array);
 static Team* TeamArrayAllocation(Season season);
@@ -47,13 +47,14 @@ struct season {
  * @return - Success/fail +reason of the function.
  */
 SeasonStatus SeasonAddRaceResult(Season season, int* results){
-    if (season==NULL || results==NULL){ // Checks if season or results is NULL.
+    if (season==NULL || results==NULL){
         return SEASON_NULL_PTR;
     }
     for (int i=0;i<SeasonGetNumberOfDrivers(season);i++) {
         /* Add points to each driver by it's id and position in race. */
         DriverAddRaceResult(season->drivers_array[results[i]-1],i+1);
-        season->last_race_results_array[i] = results[i];  // Copies the last race results.
+        /* Copies the last race results. */
+        season->last_race_results_array[i] = results[i];
     }
     return SEASON_OK;
 }
@@ -62,7 +63,7 @@ SeasonStatus SeasonAddRaceResult(Season season, int* results){
  ***** Function: SeasonGetDriversStandings*****
  * Description: sorts the drivers by their position according to the points gained till the function is called.
  * @param season - a pointer to a season.
- * @return - Succses/fail + reason of the failure(if failed).
+ * @return - Success/failure of the function (if fails - with cause).
  */
 Driver* SeasonGetDriversStandings(Season season){
     if (season==NULL){
@@ -101,7 +102,7 @@ Driver* SeasonGetDriversStandings(Season season){
 /**
  ***** Function: SeasonCreate *****
  * Description: creates a new season.
- * @param status - Will hold success/fail of the function.
+ * @param status - Success/failure of the function (if fails - with cause).
  * @param season_info - String containing input of teams and drivers.
  * @return - A pointer to the season.
  */
@@ -131,7 +132,8 @@ Season SeasonCreate (SeasonStatus* status,const char* season_info){
         return NULL;
     }
     new_season->team_array = TeamArrayAllocation(new_season);
-    if (new_season->team_array == NULL){ //If allocation fails frees all the allocated elements.
+    /* If allocation fails frees all the allocated elements. */
+    if (new_season->team_array == NULL){
         if (status!=NULL){
             *status=SEASON_MEMORY_ERROR;
         }
@@ -173,8 +175,9 @@ void SeasonDestroy(Season season) {
     if(season==NULL){
         return;
     }
-    for (int j = 0; j < season->number_of_teams; j++) {
-        TeamDestroy((season->team_array)[j]); // Destroys all teams and their drivers.
+    /* Destroys all teams and their drivers. */
+    for (int j = 0; j < season->number_of_teams; j++){
+        TeamDestroy((season->team_array)[j]);
     }
     free(season->drivers_array);
     free(season->team_array);
@@ -202,6 +205,7 @@ int SeasonGetNumberOfDrivers(Season season){
  * @return number of teams of the season.
  */
 int SeasonGetNumberOfTeams(Season season){
+    /* 'season' is not a valid pointer therefore doesn't have teams. */
     if(season==NULL){
         return 0;
     }
@@ -210,7 +214,7 @@ int SeasonGetNumberOfTeams(Season season){
 
 /**
  ***** Function : SeasonGetTeamStandings *****
- *Description: sorting the teams in the season by their points.
+ * Description: sorting the teams in the season by their points.
  * @param season - A pointer to a season.
  * @return - A pointer to a sorted team array.
  */
@@ -219,7 +223,7 @@ Team* SeasonGetTeamsStandings(Season season){
         return NULL;
     }
     TeamStatus status;
-    int index_of_current_winning_team=0;
+    int index_of_max_points_team=0;
     Team* sorted_team_array=
             malloc(sizeof(*sorted_team_array)*season->number_of_teams);
     if(sorted_team_array==NULL){
@@ -231,21 +235,21 @@ Team* SeasonGetTeamsStandings(Season season){
         free(sorted_team_array);
         return NULL;
     }
-    /* Team points array will contain in index i the number of points of team
-      i in the teams array found in the season. */
+    /* 'team_points_array' will contain in index i the number of points
+     * of team i in the teams array found in the season. */
     for (int i=0;i<(season->number_of_teams);i++) {
         team_points_array[i]=TeamGetPoints(season->team_array[i],&status);
-        if (status==TEAM_NULL_PTR){
+        if (status==TEAM_NULL_PTR){ // Error reading team points.
             free(sorted_team_array);
             free(team_points_array);
             return NULL;
         }
     }
-    for (int j=0;j<season->number_of_teams;j++) {
-        index_of_current_winning_team=FindCurrentWinningTeam(
-                season,team_points_array,season->number_of_teams);
+    for (int j=0;j<season->number_of_teams;j++){
+        index_of_max_points_team= FindIndexOfMaxPointsTeam(
+                season, team_points_array, season->number_of_teams);
         sorted_team_array[j]=
-                season->team_array[index_of_current_winning_team];
+                season->team_array[index_of_max_points_team];
     }
     free(team_points_array);
     return sorted_team_array;
@@ -262,7 +266,7 @@ Team* SeasonGetTeamsStandings(Season season){
 Team SeasonGetTeamByPosition(Season season, int position,
                              SeasonStatus* status){
     if (season==NULL){
-        if(status!=NULL){ // Updates status only if it is not a NULL pointer.
+        if(status!=NULL){
             *status=SEASON_NULL_PTR;
         }
         return NULL;
@@ -273,7 +277,8 @@ Team SeasonGetTeamByPosition(Season season, int position,
         }
         return NULL;
     }
-    /* Sorted_team_array will hold a new (new pointer) array sorted by each team's points */
+    /* Sorted_team_array will hold a new (new pointer) array sorted by
+     * each team's points */
     Team* sorted_team_array=SeasonGetTeamsStandings(season);
     if(status!=NULL){
         *status=SEASON_OK;
@@ -288,7 +293,8 @@ Team SeasonGetTeamByPosition(Season season, int position,
             return team;
         }
     }
-    return NULL; // Shouldn't get here.
+    /* Shouldn't get here. */
+    return NULL;
 }
 
 /**
@@ -311,7 +317,8 @@ Driver SeasonGetDriverByPosition(Season season, int position,
         *status=SEASON_NULL_PTR;
         return NULL;
     }
-    /* Sorted_driver_array will hold a new (new pointer) array sorted by each driver's points */
+    /* Sorted_driver_array will hold a new (new pointer) array sorted by
+     * each driver's points */
     Driver* sorted_driver_array=SeasonGetDriversStandings(season);
     int id = DriverGetId(sorted_driver_array[position-1]);
     /* Searches for the wanted driver in the driver array found in season
@@ -342,24 +349,28 @@ static Driver* DriverArrayAllocation(Season season ,Team* teams_array){
     assert(season!=NULL && teams_array!=NULL);
     Driver* drivers_array =
             malloc(sizeof(*drivers_array)*season->number_of_drivers);
-    if (drivers_array == NULL){    //If allocation fails frees all the allocated elements.
+    /* If allocation fails frees all the allocated elements. */
+    if (drivers_array == NULL){
         free(season);
         free(teams_array);
         return NULL;
     }
-    for (int j=0;j<season->number_of_drivers;j++) { //Setting array pointers to NULL which helps if
-        drivers_array[j] = NULL;                           //memory allocation fails.
+    /* Setting array pointers to NULL which helps if memory allocation
+     * fails. */
+    for (int j=0;j<season->number_of_drivers;j++){
+        drivers_array[j] = NULL;
     }
     return drivers_array;
 }
 
 /**
  ***** Static function: TeamArrayAllocation *****
- * Description: allocates memory to the teams array according to the number of teams in the season,
- * and sets it's elements to NULL.
+ * Description: allocates memory to the teams array according to the number
+ * of teams in the season, and sets it's elements to NULL.
  * @param season - A pointer to a season.
  * @param season_info_copy - A pointer to the season's info copy string.
- * @return - A pointer to the allocated teams array or NULL in case of memory allocation error.
+ * @return - A pointer to the allocated teams array or NULL in case of
+ * memory allocation error.
  */
 static Team* TeamArrayAllocation(Season season) {
     assert(season!=NULL);
@@ -376,11 +387,12 @@ static Team* TeamArrayAllocation(Season season) {
 
 /**
  ***** Static Function : SeasonLastRaceResultsArrayAllocation *****
- * Description: allocates memory according to the number of drivers in the season which will
- * contain the last race results.
+ * Description: allocates memory according to the number of drivers in the
+ * season which will contain the last race results.
  * @param season - A pointer to a season.
  * @param season_info_copy - A pointer to the season's info copy string.
- * @return - A pointer to the allocated results array or NULL in case of memory allocation error.
+ * @return - A pointer to the allocated results array or NULL in case of
+ * memory allocation error.
  */
 static int* SeasonLastRaceResultsArrayAllocation(Season season){
     assert(season!=NULL);
@@ -392,7 +404,8 @@ static int* SeasonLastRaceResultsArrayAllocation(Season season){
 /**
  ***** Static function:DriversArrayToPointsArray *****
  * Description: adding each driver's points to a given array.
- * @param drivers_points - An array of points of drivers. driver_points[i] contaions points of driver i.
+ * @param drivers_points - An array of points of drivers. driver_points[i]
+ * contaions points of driver i.
  * @param drivers_array - A pointer to a driver array.
  * @param number_of_drivers - Number of drivers.
  */
@@ -435,9 +448,9 @@ static int FindBestTeamDriverPosition (Season season,Team team){
 
 /**
  ***** Static function:FindIndexOfMaxPointsDriver *****
- * Description: finds the driver with the highest number of points. In case there are 2 drivers
- * with equal number of points checks which driver got a better position in the last
- * race and returns its index.
+ * Description: finds the driver with the highest number of points. In case
+ * there are 2 drivers with equal number of points checks which driver got
+ * a better position in the last race and returns its index.
  * @param season - A pointer to a season.
  * @param points - A pointer to an array of dirvers points array.
  * @param number_of_drivers - Number of drivers.
@@ -492,14 +505,16 @@ static int FindLastPositionById(Season season, int id){
  */
 static void SeasonDriversAndTeamsCreation (const char* season_info,
                                            SeasonStatus* status,Season season){
-    /* drivers_index and team_index represent the indexes in which a driver\team
-       should be added. Line number counts the number of lines starting from the
-       first line which a team's name appears (right after line of the year) */
+    /* drivers_index and team_index represent the indexes in which a
+     * driver\team should be added. Line number counts the number of lines
+     * starting from the first line which a team's name appears
+     * (right after line of the year) */
     int drivers_index=0, teams_index=0, id=1, line_number=0;
     TeamStatus team_creation_status;
     DriverStatus driver_creation_status;
     char* season_info_copy = malloc((strlen(season_info))+1);
-    if(season_info_copy == NULL){ //If allocation fails frees all the allocated elements.
+    /* If allocation fails frees all the allocated elements. */
+    if(season_info_copy == NULL){
         if (status!=NULL) {
             *status = SEASON_MEMORY_ERROR;
         }
@@ -508,13 +523,15 @@ static void SeasonDriversAndTeamsCreation (const char* season_info,
     }
     strcpy(season_info_copy,season_info);
     char* line = strtok(season_info_copy,"\n");
-    season->year = atoi(line); // converting first line(string of year) to int.
+    /* Converting first line(string of year) to int. */
+    season->year = atoi(line);
     line = strtok(NULL,"\n");
     while(line != NULL){
-        if(line_number++%3 == 0){   //Checks if the current line is a team name.
+        if(line_number++%3 == 0){ //Checks if the current line is a team name.
             season->team_array[teams_index++] =
                     TeamCreate(&team_creation_status,line);
-            if (team_creation_status == TEAM_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
+            /* If allocation fails frees all the allocated elements. */
+            if (team_creation_status == TEAM_MEMORY_ERROR){
                 SeasonDestroy(season);
                 free(season_info_copy);
                 return;
@@ -524,7 +541,8 @@ static void SeasonDriversAndTeamsCreation (const char* season_info,
             SetDriversInSeason(line,season->drivers_array,season->team_array,
                                &id,&driver_creation_status,&drivers_index,&teams_index,season,
                                season_info_copy);
-            if(driver_creation_status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
+            /* If allocation fails frees all the allocated elements. */
+            if(driver_creation_status == DRIVER_MEMORY_ERROR){
                 return;
             }
         }
@@ -535,8 +553,8 @@ static void SeasonDriversAndTeamsCreation (const char* season_info,
 
 /**
  ***** Static Function : SetDriversInSeason *****
- * Description: creates drivers, putting them in drivers array, sets their season, adding
- * them to their team and setting them to their team.
+ * Description: creates drivers, putting them in drivers array, sets their
+ * season, adding them to their team and setting them to their team.
  * @param driver_name - Driver's name.
  * @param drivers_array - A pointer to drivers array.
  * @param team_array - A pointer to teams array.
@@ -552,7 +570,8 @@ static void SetDriversInSeason(char* driver_name, Driver* drivers_array,
                                int* team_index, Season season, char* season_info_copy){
     drivers_array[(*driver_index)++] = DriverCreate
             (status,driver_name,(*id)++);
-    if(*status == DRIVER_MEMORY_ERROR){ //If allocation fails frees all the allocated elements.
+    /* If allocation fails frees all the allocated elements. */
+    if(*status == DRIVER_MEMORY_ERROR){
         SeasonDestroy(season);
         free(season_info_copy);
         return;
@@ -626,16 +645,16 @@ static bool DriverIsNone(char* name, char* source ){
 
 /**
  ***** Static Function : FindCurrentWinningTeam *****
- * Description: finds the index of the team with the highest points. If two teams has equal number
- * of points checks which of the team's driver's position was highest and returns the
- * index of this team.
+ * Description: finds the index of the team with the highest points.
+ * If two teams has equal number of points checks which of the team's
+ * driver's position was highest and returns the index of this team.
  * @param season - A pointer to a season.
  * @param points - A pointer to an array which contains the teams points.
  * @param number_of_teams - Number of teams in the season.
  * @return - Winning team's index.
  */
-static int FindCurrentWinningTeam
-        (Season season, int* points, int number_of_teams){
+static int FindIndexOfMaxPointsTeam
+        (Season season, int *points, int number_of_teams){
     assert(season!=NULL && points!=NULL);
     int winning_team_index=0;
     int max_team_points=points[0];
@@ -658,5 +677,4 @@ static int FindCurrentWinningTeam
     points[winning_team_index]=-1;
     return winning_team_index;
 }
-
 /** End of static functions */

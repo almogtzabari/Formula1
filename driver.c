@@ -24,7 +24,8 @@ struct driver {
  * @param status - will hold success or fail of the function.
  * @param driver_name - A string which contains the driver's name.
  * @param driverId - A given id.
- * @return return - NULL in case of failure or pointer to the created driver in case of success.
+ * @return return - NULL in case of failure or pointer to the created
+ * driver in case of success.
  */
 Driver DriverCreate(DriverStatus* status, char* driver_name, int driverId){
     if (driver_name==NULL){
@@ -176,7 +177,7 @@ DriverStatus DriverAddRaceResult(Driver driver, int position){
  * Description: gets driver's points.
  * @param driver - A pointer to a driver.
  * @param status - Success/failure of the function (if fails - with cause).
- * @return - number of points of a given driver.
+ * @return - Number of points of a given driver.
  */
 int DriverGetPoints(Driver driver, DriverStatus* status){
     if (driver==NULL){
@@ -195,7 +196,7 @@ int DriverGetPoints(Driver driver, DriverStatus* status){
 /**
  *****  Function: DriverGetSeason *****
  * @param driver - A pointer to a driver.
- * @return - the season of the driver.
+ * @return - The season of the driver.
  */
 static Season DriverGetSeason(Driver driver){
     return driver->season_of_driver;
